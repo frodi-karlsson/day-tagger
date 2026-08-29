@@ -72,3 +72,7 @@ Do not rely on memory for version numbers or APIs.
 Declare every dependency in `package.json` as `^{major}`, for example `"astro": "^7"`.
 Never write a full version range like `^7.2.9`.
 The lockfile holds the exact version.
+
+Let pnpm's release-age cooldown win.
+If pnpm resolves an older version than the registry latest, take it.
+Do not force a version and grow `minimumReleaseAgeExclude` without asking first.
