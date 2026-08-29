@@ -2,21 +2,45 @@ import { assert } from '#src/error/assert.js'
 import type { FullConfig } from '@playwright/test'
 import { execFileSync } from 'node:child_process'
 
-/** Builds with preview routes on, then starts astro's preview server on the configured port. */
-export default function globalSetup(config: FullConfig): void {
+/** Builds with preview routes on, starts astro's preview server, and waits for it to answer. */
+export default async function globalSetup(config: FullConfig): Promise<void> {
   const env = { ...process.env, APP_ENV: 'e2e' }
+  const baseUrl = readBaseUrl(config)
 
   execFileSync('pnpm', ['run', 'build'], { env, stdio: 'inherit' })
-  execFileSync('pnpm', ['exec', 'astro', 'preview', '--port', readPort(config)], {
-    env,
-    stdio: 'inherit',
-  })
+  execFileSync(
+    'pnpm',
+    ['exec', 'astro', 'preview', '--background', '--port', new URL(baseUrl).port],
+    { env, stdio: 'inherit' },
+  )
+
+  await waitForServer(baseUrl)
 }
 
-function readPort(config: FullConfig): string {
-  const baseURL = config.projects[0]?.use.baseURL
+function readBaseUrl(config: FullConfig): string {
+  const baseUrl = config.projects[0]?.use.baseURL
 
-  assert(baseURL !== undefined, 'No baseURL configured, so the preview server has no port.')
+  assert(baseUrl !== undefined, 'No baseURL configured, so the preview server has no port.')
 
-  return new URL(baseURL).port
+  return baseUrl
+}
+
+async function waitForServer(url: string): Promise<void> {
+  const deadline = Date.now() + 30_000
+
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetch(url)
+
+      if (response.ok) {
+        return
+      }
+    } catch {
+      // Not listening yet.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 200))
+  }
+
+  throw new Error(`Preview server never answered at ${url}.`)
 }
