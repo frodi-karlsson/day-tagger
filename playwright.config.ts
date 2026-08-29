@@ -15,7 +15,7 @@ export default defineConfig({
     toHaveScreenshot: {
       animations: 'disabled',
       maxDiffPixelRatio: 0.01,
-      pathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}-{projectName}-{platform}{ext}',
+      pathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}-{projectName}{ext}',
     },
   },
   projects: [

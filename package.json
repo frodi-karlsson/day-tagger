@@ -17,7 +17,7 @@
     "astro": "astro",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "astro sync && tsc --noEmit",
     "check:astro": "astro check",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
