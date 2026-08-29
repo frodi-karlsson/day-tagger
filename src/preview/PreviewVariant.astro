@@ -1,4 +1,6 @@
 ---
+import { slugify } from '#src/string/slugify.js'
+
 interface Props {
   description: string
 }
@@ -8,7 +10,7 @@ const { description } = Astro.props
 
 <section>
   <p>{description}</p>
-  <div>
+  <div data-preview-variant={slugify(description)}>
     <slot />
   </div>
 </section>

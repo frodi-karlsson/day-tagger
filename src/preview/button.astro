@@ -1,29 +1,28 @@
 ---
-import { Button } from '#src/button/Button.js'
+import { Button, type ButtonSize, type ButtonVariant } from '#src/button/Button.js'
 import PreviewPage from '#src/preview/PreviewPage.astro'
 import PreviewVariant from '#src/preview/PreviewVariant.astro'
+
+const variants: ButtonVariant[] = ['primary', 'secondary', 'ghost']
+const sizes: ButtonSize[] = ['sm', 'md', 'lg']
+const states = [
+  { name: 'enabled', disabled: false },
+  { name: 'disabled', disabled: true },
+]
 ---
 
 <PreviewPage title="Button">
-  <PreviewVariant description="Primary, the default">
-    <Button data-testid="button-primary" client:load>Save</Button>
-  </PreviewVariant>
-
-  <PreviewVariant description="Secondary, bordered against the surface">
-    <Button variant="secondary" data-testid="button-secondary" client:load>Save</Button>
-  </PreviewVariant>
-
-  <PreviewVariant description="Ghost, no fill until hovered">
-    <Button variant="ghost" data-testid="button-ghost" client:load>Save</Button>
-  </PreviewVariant>
-
-  <PreviewVariant description="Sizes, small through large">
-    <Button size="sm" data-testid="button-sm" client:load>Save</Button>
-    <Button size="md" data-testid="button-md" client:load>Save</Button>
-    <Button size="lg" data-testid="button-lg" client:load>Save</Button>
-  </PreviewVariant>
-
-  <PreviewVariant description="Disabled, dimmed and unclickable">
-    <Button disabled data-testid="button-disabled" client:load>Save</Button>
-  </PreviewVariant>
+  {
+    variants.map((variant) =>
+      states.map((state) => (
+        <PreviewVariant description={`${variant}, ${state.name}`}>
+          {sizes.map((size) => (
+            <Button variant={variant} size={size} disabled={state.disabled} client:load>
+              Save
+            </Button>
+          ))}
+        </PreviewVariant>
+      )),
+    )
+  }
 </PreviewPage>
