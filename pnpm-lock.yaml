@@ -41,7 +41,7 @@ importers:
         version: 6.10.2(eslint@10.9.1)
       eslint-plugin-solid:
         specifier: ^0
-        version: 0.17.0(eslint@10.9.1)(typescript@6.0.3)
+        version: 0.16.1(eslint@10.9.1)(typescript@6.0.3)
       globals:
         specifier: ^17
         version: 17.11.0
@@ -1453,8 +1453,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9
 
-  eslint-plugin-solid@0.17.0:
-    resolution: {integrity: sha512-0x38zjAZVm4vW5u5mS14WxO9BJsal3IxsR/8QOB2nBiXBdH1LlbbRs2YfqgtPWVpy3OIlnt6yGhoXuZmoHULwQ==}
+  eslint-plugin-solid@0.16.1:
+    resolution: {integrity: sha512-RUd46y3Y2acT4//hxSut1UTGnDoZMWEhrplyE0cK0E3cWwvIsfui5HkG7cubQ95TntVacVHe+uYh97PSm0id4A==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
@@ -2831,8 +2831,8 @@ packages:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+  zod@4.5.1:
+    resolution: {integrity: sha512-P3GqeAEOEDqKvafVGLezbg+39YW/ze4xrD4qdS0adOY8eoI3zfjv1PQM4UwQzgT8mZKXEbqtVt8K+ZKGqkMFKg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -3904,7 +3904,7 @@ snapshots:
       vitefu: 1.1.3(vite@8.2.2(esbuild@0.28.2)(yaml@2.9.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 22.0.0
-      zod: 4.4.3
+      zod: 4.5.1
     optionalDependencies:
       sharp: 0.35.4
     transitivePeerDependencies:
@@ -4354,7 +4354,7 @@ snapshots:
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
 
-  eslint-plugin-solid@0.17.0(eslint@10.9.1)(typescript@6.0.3):
+  eslint-plugin-solid@0.16.1(eslint@10.9.1)(typescript@6.0.3):
     dependencies:
       '@typescript-eslint/utils': 8.68.0(eslint@10.9.1)(typescript@6.0.3)
       eslint: 10.9.1
@@ -5796,6 +5796,6 @@ snapshots:
 
   yocto-queue@1.2.2: {}
 
-  zod@4.4.3: {}
+  zod@4.5.1: {}
 
   zwitch@2.0.4: {}
