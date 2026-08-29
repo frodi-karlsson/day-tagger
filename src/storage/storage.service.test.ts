@@ -6,7 +6,7 @@ let service: StorageService;
 beforeEach(() => {
   localStorage.clear();
   sessionStorage.clear();
-  service = new StorageService();
+  service = new StorageService(localStorage);
 });
 
 describe('constructor', () => {

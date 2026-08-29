@@ -1,8 +1,10 @@
+import { registerDI } from '../di/di';
+
 /** Typed wrapper around a Storage implementation. Never throws on unreadable values. */
 export class StorageService {
   private readonly storage: Storage;
 
-  constructor(storage: Storage = localStorage) {
+  constructor(storage: Storage) {
     this.storage = storage;
   }
 
@@ -27,3 +29,5 @@ export class StorageService {
     this.storage.removeItem(key);
   }
 }
+
+registerDI(StorageService, () => new StorageService(localStorage));
