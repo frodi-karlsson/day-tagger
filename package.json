@@ -21,6 +21,8 @@
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots=all",
     "check": "pnpm fmt && pnpm typecheck && pnpm check:astro && pnpm lint && pnpm test"
   },
   "dependencies": {
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@astrojs/check": "^0",
     "@eslint/js": "^10",
+    "@playwright/test": "^1",
     "@types/node": "^26",
     "@typescript-eslint/parser": "^8",
     "eslint": "^10",
