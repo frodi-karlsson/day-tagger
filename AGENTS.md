@@ -55,7 +55,7 @@ A plain comment is fine in rare cases where context cannot live in the code, for
 
 Test heavily.
 
-- Do not test UI. Test logic.
+- Do not unit test UI. Unit tests are for logic.
 - Design for that. Keep logic out of components and behind clear seams.
 - Put logic in single-purpose services, for example `cookie.service.ts` or `storage.service.ts`.
 - Services are easier to mock than loose functions. Prefer them.
