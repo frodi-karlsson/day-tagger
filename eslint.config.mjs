@@ -3,6 +3,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import prettier from 'eslint-config-prettier/flat';
 import astro from 'eslint-plugin-astro';
 import importX from 'eslint-plugin-import-x';
+import perfectionist from 'eslint-plugin-perfectionist';
 import solid from 'eslint-plugin-solid';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -22,8 +23,26 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: { 'import-x': importX },
+    plugins: { 'import-x': importX, perfectionist },
     rules: {
+      'perfectionist/sort-modules': [
+        'error',
+        {
+          type: 'unsorted',
+          groups: [
+            ['class', 'export-class', 'declare-class', 'export-declare-class'],
+            [
+              'function',
+              'export-function',
+              'async-function',
+              'export-async-function',
+              'declare-function',
+            ],
+            ['type', 'export-type', 'declare-type'],
+            ['interface', 'export-interface', 'declare-interface'],
+          ],
+        },
+      ],
       'import-x/extensions': ['error', 'always', { ignorePackages: true }],
       'no-restricted-imports': [
         'error',

@@ -37,6 +37,7 @@
     "eslint-plugin-astro": "^3",
     "eslint-plugin-import-x": "^4",
     "eslint-plugin-jsx-a11y": "^6",
+    "eslint-plugin-perfectionist": "^5",
     "eslint-plugin-solid": "^0",
     "globals": "^17",
     "happy-dom": "^20",

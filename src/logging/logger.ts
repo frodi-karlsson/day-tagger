@@ -1,11 +1,5 @@
 import type { Promisable } from '#src/promise/promisable.js';
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-
-export type LogSink = (level: LogLevel, ...args: unknown[]) => Promisable<void>;
-
-export type Logger = Record<LogLevel, (...args: unknown[]) => Promisable<void>>;
-
 class SinkLogger implements Logger {
   private readonly sink: LogSink;
 
@@ -34,3 +28,9 @@ class SinkLogger implements Logger {
 export function getLogger(sink: LogSink): Logger {
   return new SinkLogger(sink);
 }
+
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+export type LogSink = (level: LogLevel, ...args: unknown[]) => Promisable<void>;
+
+export type Logger = Record<LogLevel, (...args: unknown[]) => Promisable<void>>;
