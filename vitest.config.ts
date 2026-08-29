@@ -1,10 +1,12 @@
-import { getViteConfig } from 'astro/config'
-import type { TestUserConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
 
-const test: TestUserConfig = {
-  environment: 'happy-dom',
-  include: ['src/**/*.test.ts'],
-  restoreMocks: true,
-}
-
-export default getViteConfig({ test })
+export default defineConfig({
+  // Keeps solid-js and solid-js/store on the same build, otherwise reactivity is a no-op.
+  resolve: { conditions: ['browser', 'development'] },
+  test: {
+    server: { deps: { inline: [/solid-js/] } },
+    environment: 'happy-dom',
+    include: ['src/**/*.test.ts'],
+    restoreMocks: true,
+  },
+})
