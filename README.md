@@ -1,43 +1,44 @@
-# Astro Starter Kit: Minimal
+# day-tagger
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+A PWA for tagging days in a calendar with user defined tags.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+A tag is more than a label. It can carry a set of choices, with rules for how many of them
+apply to a given day. You define your own tags in a setup menu, then tagging a day is a
+matter of picking tags and answering whatever each one asks for.
 
-## 🚀 Project Structure
+## Tags
 
-Inside of your Astro project, you'll see the following folders and files:
+You build your own tags in a setup menu. A tag has a label, and can be switched off without
+losing the days already tagged with it.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+A tag can carry a set of choices, along with limits on how many of them a single day may
+take. Some tags need no answer at all. Some accept any number. Some require exactly one.
+Picking a tag with choices opens a multi select that holds you to those limits.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+An "Exercise" tag might offer run, gym and swim, and accept any combination including none.
+A "Travel" tag might offer work and leisure, and insist on exactly one.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Stack
 
-Any static assets, like images, can be placed in the `public/` directory.
+Astro with Solid islands, TypeScript, ESM only. pnpm for packages, Vitest with happy-dom for
+tests, Prettier and ESLint for uniformity.
 
-## 🧞 Commands
+## Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command           | Action                                          |
+| ----------------- | ----------------------------------------------- |
+| `pnpm dev`        | Dev server on `localhost:4321`                  |
+| `pnpm build`      | Build to `./dist/`                              |
+| `pnpm preview`    | Serve the build locally                         |
+| `pnpm check`      | Format, typecheck, astro check, lint, then test |
+| `pnpm test:watch` | Tests in watch mode                             |
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `pnpm install`         | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+`pnpm check` is the one to run before committing. It writes formatting changes rather than
+only reporting them.
 
-## 👀 Want to learn more?
+## Status
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Early. The toolchain, a DI registry, and a handful of services are in place. The calendar,
+the tag setup menu, and the PWA shell are not built yet.
+
+See `AGENTS.md` for the conventions this repo follows.
