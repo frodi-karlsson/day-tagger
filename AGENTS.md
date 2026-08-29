@@ -61,6 +61,18 @@ Test heavily.
 - Services are easier to mock than loose functions. Prefer them.
 - Components should call services and render. Nothing more.
 
+Structure of a test file:
+
+- Use `test`, not `it`.
+- Test names start with "should".
+- One `describe` block per unit of code, usually a method or a function.
+- Do not wrap a file in a `describe` for the file's only unit. That level is redundant.
+
+This reads as `read > should return null for a missing key`.
+
+Split test bodies into arrange, act and assert with a blank line between each.
+Use no other blank lines inside a test.
+
 ## Dependencies
 
 Always use the latest version of a dependency you add.

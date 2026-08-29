@@ -16,7 +16,9 @@
     "typecheck": "tsc --noEmit",
     "check:astro": "astro check",
     "lint": "eslint . --max-warnings 0",
-    "check": "pnpm fmt && pnpm typecheck && pnpm check:astro && pnpm lint"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "pnpm fmt && pnpm typecheck && pnpm check:astro && pnpm lint && pnpm test"
   },
   "dependencies": {
     "@astrojs/solid-js": "^7",
@@ -33,9 +35,11 @@
     "eslint-plugin-jsx-a11y": "^6",
     "eslint-plugin-solid": "^0",
     "globals": "^17",
+    "happy-dom": "^20",
     "prettier": "^3",
     "prettier-plugin-astro": "^0",
     "typescript": "^6",
-    "typescript-eslint": "^8"
+    "typescript-eslint": "^8",
+    "vitest": "^4"
   }
 }
