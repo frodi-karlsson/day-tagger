@@ -1,0 +1,41 @@
+// Component facing accessors. This file emits no CSS, so it is safe to @use
+// from anywhere without duplicating output.
+
+@use 'sass:map';
+@use 'scales';
+
+@function step($map, $name, $step) {
+  @if not map.has-key($map, $step) {
+    @error 'Unknown #{$name} step "#{$step}". Available: #{map.keys($map)}.';
+  }
+
+  @return var(--#{$name}-#{$step});
+}
+
+@function space($step) {
+  @return step(scales.$space, 'space', $step);
+}
+
+@function radius($step) {
+  @return step(scales.$radius, 'radius', $step);
+}
+
+@function font-size($step) {
+  @return step(scales.$font-size, 'font-size', $step);
+}
+
+@function line-height($step) {
+  @return step(scales.$line-height, 'line-height', $step);
+}
+
+@function font-weight($step) {
+  @return step(scales.$font-weight, 'font-weight', $step);
+}
+
+@function neutral($step) {
+  @return step(scales.$neutral, 'color-neutral', $step);
+}
+
+@function primary($step) {
+  @return step(scales.$primary-light, 'color-primary', $step);
+}

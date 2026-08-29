@@ -1,0 +1,85 @@
+@use 'sass:map';
+@use 'scales';
+
+// Scales that never change between themes.
+@mixin ramps {
+  @each $step, $value in scales.$space {
+    --space-#{$step}: #{$value};
+  }
+
+  @each $step, $value in scales.$radius {
+    --radius-#{$step}: #{$value};
+  }
+
+  @each $step, $value in scales.$font-size {
+    --font-size-#{$step}: #{$value};
+  }
+
+  @each $step, $value in scales.$line-height {
+    --line-height-#{$step}: #{$value};
+  }
+
+  @each $step, $value in scales.$font-weight {
+    --font-weight-#{$step}: #{$value};
+  }
+
+  @each $step, $value in scales.$neutral {
+    --color-neutral-#{$step}: #{$value};
+  }
+
+  --font-family-sans: #{map.get(scales.$font-family, sans)};
+  --font-family-mono: #{map.get(scales.$font-family, mono)};
+}
+
+@mixin primary-ramp($ramp) {
+  @each $step, $value in $ramp {
+    --color-primary-#{$step}: #{$value};
+  }
+}
+
+// Cream page, soft white panels sitting above it, soft black text.
+@mixin light-roles {
+  @include primary-ramp(scales.$primary-light);
+
+  --color-background: var(--color-neutral-100);
+  --color-surface: var(--color-neutral-50);
+  --color-surface-hover: var(--color-neutral-200);
+  --color-text: var(--color-neutral-900);
+  --color-text-muted: var(--color-neutral-600);
+  --color-border: var(--color-neutral-300);
+  --color-border-strong: var(--color-neutral-400);
+  --color-accent: var(--color-primary-600);
+  --color-accent-hover: var(--color-primary-700);
+  --color-accent-text: var(--color-neutral-50);
+  --color-focus: var(--color-primary-500);
+}
+
+// Medium dark page, panels recede darker rather than lifting lighter.
+@mixin dark-roles {
+  @include primary-ramp(scales.$primary-dark);
+
+  --color-background: var(--color-neutral-800);
+  --color-surface: var(--color-neutral-900);
+  --color-surface-hover: var(--color-neutral-950);
+  --color-text: var(--color-neutral-100);
+  --color-text-muted: var(--color-neutral-400);
+  --color-border: var(--color-neutral-700);
+  --color-border-strong: var(--color-neutral-600);
+  --color-accent: var(--color-primary-500);
+  --color-accent-hover: var(--color-primary-400);
+  --color-accent-text: var(--color-neutral-950);
+  --color-focus: var(--color-primary-400);
+}
+
+:root {
+  @include ramps;
+  @include light-roles;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark-roles;
+  }
+}
