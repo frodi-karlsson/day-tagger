@@ -1,7 +1,7 @@
-import { registerDI } from '../di/di';
-import { getConsoleSink } from '../logging/console.sink';
-import { getLogger, type Logger } from '../logging/logger';
-import type { Promisable } from '../promise/promisable';
+import { registerDI } from '#src/di/di.js';
+import { getConsoleSink } from '#src/logging/console.sink.js';
+import { getLogger, type Logger } from '#src/logging/logger.js';
+import type { Promisable } from '#src/promise/promisable.js';
 
 /** Single place to report errors. Backed by a logger until a real reporter replaces it. */
 export class ErrorService {

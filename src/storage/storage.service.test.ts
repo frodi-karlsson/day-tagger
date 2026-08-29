@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { StorageService } from './storage.service';
+import { StorageService } from './storage.service.js';
 
 let service: StorageService;
 

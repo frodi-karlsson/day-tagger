@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { Logger } from '../logging/logger';
-import { ErrorService } from './error.service';
+import type { Logger } from '#src/logging/logger.js';
+import { ErrorService } from './error.service.js';
 
 let logger: Logger;
 let service: ErrorService;

@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { getConsoleSink } from './console.sink';
+import { getConsoleSink } from './console.sink.js';
 
 test('should write to the console method matching the level', async () => {
   const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

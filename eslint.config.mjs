@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import prettier from 'eslint-config-prettier/flat';
 import astro from 'eslint-plugin-astro';
+import importX from 'eslint-plugin-import-x';
 import solid from 'eslint-plugin-solid';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -21,7 +22,20 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    plugins: { 'import-x': importX },
     rules: {
+      'import-x/extensions': ['error', 'always', { ignorePackages: true }],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../**'],
+              message: 'Import from another folder with the #src/ alias.',
+            },
+          ],
+        },
+      ],
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',

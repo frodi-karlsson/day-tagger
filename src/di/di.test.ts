@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { inject, registerDI, resetDI } from './di';
+import { inject, registerDI, resetDI } from './di.js';
 
 class Example {
   value = 'real';

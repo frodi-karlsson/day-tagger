@@ -1,4 +1,4 @@
-import type { Promisable } from '../promise/promisable';
+import type { Promisable } from '#src/promise/promisable.js';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

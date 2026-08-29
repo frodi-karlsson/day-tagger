@@ -1,4 +1,4 @@
-import { registerDI } from '../di/di';
+import { registerDI } from '#src/di/di.js';
 
 /** Typed wrapper around a Storage implementation. Never throws on unreadable values. */
 export class StorageService {

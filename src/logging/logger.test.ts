@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { getLogger, type LogLevel } from './logger';
+import { getLogger, type LogLevel } from './logger.js';
 
 const levels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
 
