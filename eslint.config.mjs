@@ -38,7 +38,7 @@ export default defineConfig(
   },
 
   {
-    files: ['src/logging/console.sink.ts'],
+    files: ['src/logging/**'],
     rules: { 'no-console': 'off' },
   },
 

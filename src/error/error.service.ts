@@ -1,4 +1,5 @@
-import { getConsoleSink } from '../logging/console.sink';
+import { registerDI } from '../di/di';
+import { getLogSink } from '../logging/log-sink';
 import { getLogger, type Logger } from '../logging/logger';
 import type { Promisable } from '../promise/promisable';
 
@@ -19,4 +20,4 @@ export class ErrorService {
   }
 }
 
-export const errorService = new ErrorService(getLogger(getConsoleSink('[Error]')));
+registerDI(ErrorService, () => new ErrorService(getLogger(getLogSink('[Error]'))));
