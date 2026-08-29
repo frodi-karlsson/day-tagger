@@ -1,11 +1,11 @@
-/** A class used as a lookup key. Never constructed by the container itself. */
-export type Injectable<T> = abstract new (...args: never[]) => T
-
 interface Registration {
   factory: () => unknown
   instance: unknown
   resolved: boolean
 }
+
+/** A class used as a lookup key. Never constructed by the container itself. */
+export type Injectable<T> = abstract new (...args: never[]) => T
 
 const registry = new Map<Injectable<unknown>, Registration>()
 

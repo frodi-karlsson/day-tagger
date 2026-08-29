@@ -39,8 +39,8 @@ export default defineConfig(
               'export-async-function',
               'declare-function',
             ],
-            ['type', 'export-type', 'declare-type'],
             ['interface', 'export-interface', 'declare-interface'],
+            ['type', 'export-type', 'declare-type'],
           ],
         },
       ],
@@ -60,6 +60,7 @@ export default defineConfig(
       '@typescript-eslint/explicit-module-boundary-types': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
       'no-console': 'error',
+      'func-style': ['error', 'declaration'],
       eqeqeq: 'error',
       'prefer-const': 'error',
       'object-shorthand': 'error',
@@ -69,7 +70,7 @@ export default defineConfig(
   {
     files: ['**/*.tsx'],
     // eslint-plugin-solid types its rules with @typescript-eslint/utils, which ESLint 10 rejects.
-    ...(solid.configs['v2-strict'] as unknown as Linter.Config),
+    ...(solid.configs['flat/typescript'] as unknown as Linter.Config),
   },
 
   {
