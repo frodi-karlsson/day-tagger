@@ -1,6 +1,6 @@
-import { createSignal } from 'solid-js';
+import { createSignal, type JSX } from 'solid-js';
 
-export function Counter() {
+export function Counter(): JSX.Element {
   const [count, setCount] = createSignal(0);
 
   return (
