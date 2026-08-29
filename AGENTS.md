@@ -63,6 +63,7 @@ Test heavily.
 
 Structure of a test file:
 
+- Import from `vitest` by name. Do not enable or rely on vitest globals.
 - Use `test`, not `it`.
 - Test names start with "should".
 - One `describe` block per unit of code, usually a method or a function.

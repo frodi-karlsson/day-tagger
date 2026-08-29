@@ -1,10 +1,10 @@
-import type {} from 'vitest/config';
 import { getViteConfig } from 'astro/config';
+import type { TestUserConfig } from 'vitest/config';
 
-export default getViteConfig({
-  test: {
-    environment: 'happy-dom',
-    include: ['src/**/*.test.ts'],
-    restoreMocks: true,
-  },
-});
+const test: TestUserConfig = {
+  environment: 'happy-dom',
+  include: ['src/**/*.test.ts'],
+  restoreMocks: true,
+};
+
+export default getViteConfig({ test });
