@@ -1,4 +1,3 @@
-// @ts-check
 import solid from '@astrojs/solid-js';
 import { defineConfig } from 'astro/config';
 

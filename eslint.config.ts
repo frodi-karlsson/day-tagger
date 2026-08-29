@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import type { Linter } from 'eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import prettier from 'eslint-config-prettier/flat';
 import astro from 'eslint-plugin-astro';
@@ -67,7 +68,8 @@ export default defineConfig(
 
   {
     files: ['**/*.tsx'],
-    ...solid.configs['v2-strict'],
+    // eslint-plugin-solid types its rules with @typescript-eslint/utils, which ESLint 10 rejects.
+    ...(solid.configs['v2-strict'] as unknown as Linter.Config),
   },
 
   {
@@ -79,12 +81,12 @@ export default defineConfig(
   astro.configs['flat/jsx-a11y-strict'],
 
   {
-    files: ['**/*.astro', '**/*.mjs'],
+    files: ['**/*.astro'],
     extends: [tseslint.configs.disableTypeChecked],
   },
 
   {
-    files: ['**/*.mjs'],
+    files: ['*.config.ts'],
     languageOptions: { globals: globals.node },
   },
 
