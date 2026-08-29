@@ -37,6 +37,11 @@ export default defineConfig(
     ...solid.configs['v2-strict'],
   },
 
+  {
+    files: ['src/logging/console.sink.ts'],
+    rules: { 'no-console': 'off' },
+  },
+
   astro.configs['flat/recommended'],
   astro.configs['flat/jsx-a11y-strict'],
 

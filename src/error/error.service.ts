@@ -1,4 +1,5 @@
-import type { Logger } from '../logging/logger';
+import { getConsoleSink } from '../logging/console.sink';
+import { getLogger, type Logger } from '../logging/logger';
 import type { Promisable } from '../promise/promisable';
 
 /** Single place to report errors. Backed by a logger until a real reporter replaces it. */
@@ -17,3 +18,5 @@ export class ErrorService {
     return this.logger.error(message);
   }
 }
+
+export const errorService = new ErrorService(getLogger(getConsoleSink('[Error]')));

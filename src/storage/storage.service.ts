@@ -2,7 +2,7 @@
 export class StorageService {
   private readonly storage: Storage;
 
-  constructor(storage: Storage = localStorage) {
+  constructor(storage: Storage) {
     this.storage = storage;
   }
 
@@ -27,3 +27,5 @@ export class StorageService {
     this.storage.removeItem(key);
   }
 }
+
+export const storageService = new StorageService(localStorage);
