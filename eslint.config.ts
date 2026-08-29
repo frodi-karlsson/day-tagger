@@ -1,13 +1,13 @@
-import js from '@eslint/js';
-import type { Linter } from 'eslint';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import prettier from 'eslint-config-prettier/flat';
-import astro from 'eslint-plugin-astro';
-import importX from 'eslint-plugin-import-x';
-import perfectionist from 'eslint-plugin-perfectionist';
-import solid from 'eslint-plugin-solid';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import js from '@eslint/js'
+import type { Linter } from 'eslint'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import prettier from 'eslint-config-prettier/flat'
+import astro from 'eslint-plugin-astro'
+import importX from 'eslint-plugin-import-x'
+import perfectionist from 'eslint-plugin-perfectionist'
+import solid from 'eslint-plugin-solid'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
 
 export default defineConfig(
   globalIgnores(['dist/', '.astro/', 'node_modules/']),
@@ -91,4 +91,4 @@ export default defineConfig(
   },
 
   prettier,
-);
+)

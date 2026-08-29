@@ -1,7 +1,7 @@
-import type { Config } from 'prettier';
+import type { Config } from 'prettier'
 
 const config: Config = {
-  semi: true,
+  semi: false,
   singleQuote: true,
   trailingComma: 'all',
   printWidth: 100,
@@ -12,6 +12,6 @@ const config: Config = {
       options: { parser: 'astro' },
     },
   ],
-};
+}
 
-export default config;
+export default config
