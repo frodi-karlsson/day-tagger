@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "APP_ENV=${APP_ENV:-prod} astro build",
     "preview": "astro preview",
     "astro": "astro",
     "fmt": "prettier --write .",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@astrojs/check": "^0",
     "@eslint/js": "^10",
+    "@types/node": "^26",
     "@typescript-eslint/parser": "^8",
     "eslint": "^10",
     "eslint-config-prettier": "^10",

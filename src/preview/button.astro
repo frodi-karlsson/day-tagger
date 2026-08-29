@@ -1,0 +1,13 @@
+---
+import { Button } from '#src/button/Button.js'
+import PreviewPage from '#src/preview/PreviewPage.astro'
+---
+
+<PreviewPage title="Button">
+  <Button data-testid="button-primary" client:load>Save</Button>
+  <Button variant="secondary" data-testid="button-secondary" client:load>Save</Button>
+  <Button variant="ghost" data-testid="button-ghost" client:load>Save</Button>
+  <Button size="sm" data-testid="button-sm" client:load>Save</Button>
+  <Button size="lg" data-testid="button-lg" client:load>Save</Button>
+  <Button disabled data-testid="button-disabled" client:load>Save</Button>
+</PreviewPage>
