@@ -68,3 +68,7 @@ Always use the latest version of a dependency you add.
 Verify the version before adding it.
 Use `npm view <pkg> version`, or check the source repo when the package needs closer inspection.
 Do not rely on memory for version numbers or APIs.
+
+Declare every dependency in `package.json` as `^{major}`, for example `"astro": "^7"`.
+Never write a full version range like `^7.2.9`.
+The lockfile holds the exact version.
