@@ -1,0 +1,31 @@
+---
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import { TagConfigMenuPreview } from '#src/preview/TagConfigMenuPreview.js'
+import type { ChoiceId, TagConfig, TagId } from '#src/tag/tag.model.js'
+
+const config: TagConfig = {
+  schemaVersion: 1,
+  tags: [
+    { id: 'walked' as TagId, label: 'Walked', hue: 200, active: true },
+    {
+      id: 'alcohol' as TagId,
+      label: 'Alcohol',
+      hue: 40,
+      active: true,
+      choices: {
+        options: [
+          { id: 'wine' as ChoiceId, label: 'Wine', active: true },
+          { id: 'liquor' as ChoiceId, label: 'Liquor', active: false },
+        ],
+        minAnswers: 0,
+        maxAnswers: 2,
+      },
+    },
+    { id: 'sleep' as TagId, label: 'Sleep', hue: 280, active: false },
+  ],
+}
+---
+
+<PreviewPage title="Tag configuration">
+  <TagConfigMenuPreview initialConfig={config} client:load />
+</PreviewPage>

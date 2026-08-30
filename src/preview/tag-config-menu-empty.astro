@@ -1,0 +1,11 @@
+---
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import { TagConfigMenuPreview } from '#src/preview/TagConfigMenuPreview.js'
+import type { TagConfig } from '#src/tag/tag.model.js'
+
+const config: TagConfig = { schemaVersion: 1, tags: [] }
+---
+
+<PreviewPage title="Tag configuration, no tags">
+  <TagConfigMenuPreview initialConfig={config} client:load />
+</PreviewPage>
