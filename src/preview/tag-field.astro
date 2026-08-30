@@ -1,0 +1,52 @@
+---
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import PreviewVariant from '#src/preview/PreviewVariant.astro'
+import { TagFieldPreview } from '#src/preview/TagFieldPreview.js'
+import type { ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
+
+const wine = { id: 'wine' as ChoiceId, label: 'Wine', active: true }
+const liquor = { id: 'liquor' as ChoiceId, label: 'Liquor', active: true }
+const beer = { id: 'beer' as ChoiceId, label: 'Beer', active: true }
+
+const plain: Tag = { id: 'walked' as TagId, label: 'Walked', active: true }
+
+const multi: Tag = {
+  id: 'alcohol' as TagId,
+  label: 'Alcohol',
+  active: true,
+  choices: { options: [wine, liquor, beer], minAnswers: 0, maxAnswers: 2 },
+}
+
+const single: Tag = {
+  id: 'mood' as TagId,
+  label: 'Mood',
+  active: true,
+  choices: { options: [wine, liquor, beer], minAnswers: 1, maxAnswers: 1 },
+}
+---
+
+<PreviewPage title="Tag field">
+  <PreviewVariant description="Not applied">
+    <TagFieldPreview tag={multi} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="Applied with no answers yet">
+    <TagFieldPreview tag={multi} initialAnswers={[]} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="Applied with one answer">
+    <TagFieldPreview tag={multi} initialAnswers={[wine.id]} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="Applied and full, remaining options disabled">
+    <TagFieldPreview tag={multi} initialAnswers={[wine.id, liquor.id]} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="Single answer, selecting replaces">
+    <TagFieldPreview tag={single} initialAnswers={[liquor.id]} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="No choices, applied by the tag alone">
+    <TagFieldPreview tag={plain} initialAnswers={[]} client:load />
+  </PreviewVariant>
+</PreviewPage>
