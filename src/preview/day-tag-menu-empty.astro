@@ -1,0 +1,12 @@
+---
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import { DayTagMenuPreview } from '#src/preview/DayTagMenuPreview.js'
+import type { IsoDate } from '#src/date/iso-date.js'
+
+const date = '2026-08-30' as IsoDate
+const entry = { date, answers: {} }
+---
+
+<PreviewPage title="Day tag menu, no tags">
+  <DayTagMenuPreview date={date} tags={[]} initialEntry={entry} client:load />
+</PreviewPage>

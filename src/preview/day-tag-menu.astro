@@ -1,0 +1,46 @@
+---
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import { DayTagMenuPreview } from '#src/preview/DayTagMenuPreview.js'
+import type { IsoDate } from '#src/date/iso-date.js'
+import type { ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
+
+const date = '2026-08-30' as IsoDate
+
+const tags: Tag[] = [
+  { id: 'walked' as TagId, label: 'Walked', hue: 200, active: true },
+  {
+    id: 'alcohol' as TagId,
+    label: 'Alcohol',
+    hue: 40,
+    active: true,
+    choices: {
+      options: [
+        { id: 'wine' as ChoiceId, label: 'Wine', active: true },
+        { id: 'liquor' as ChoiceId, label: 'Liquor', active: true },
+      ],
+      minAnswers: 0,
+      maxAnswers: 2,
+    },
+  },
+  {
+    id: 'mood' as TagId,
+    label: 'Mood',
+    hue: 280,
+    active: true,
+    choices: {
+      options: [
+        { id: 'good' as ChoiceId, label: 'Good', active: true },
+        { id: 'flat' as ChoiceId, label: 'Flat', active: true },
+      ],
+      minAnswers: 1,
+      maxAnswers: 1,
+    },
+  },
+]
+
+const entry = { date, answers: { alcohol: ['wine'] as ChoiceId[] } as Record<TagId, ChoiceId[]> }
+---
+
+<PreviewPage title="Day tag menu">
+  <DayTagMenuPreview date={date} tags={tags} initialEntry={entry} client:load />
+</PreviewPage>

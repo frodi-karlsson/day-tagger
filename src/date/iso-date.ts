@@ -26,6 +26,11 @@ export function isIsoDate(value: string): value is IsoDate {
   return toIsoDate(parsed) === value
 }
 
+/** Reads a calendar date back as a Date at local midnight, not UTC. */
+export function fromIsoDate(value: IsoDate): Date {
+  return new Date(`${value}T00:00:00`)
+}
+
 export function parseIsoDate(value: string): IsoDate {
   assert(isIsoDate(value), `"${value}" is not a calendar date in YYYY-MM-DD form.`)
 

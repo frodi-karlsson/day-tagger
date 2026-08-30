@@ -1,4 +1,4 @@
-import { isIsoDate, parseIsoDate, toIsoDate } from '#src/date/iso-date.js'
+import { fromIsoDate, isIsoDate, parseIsoDate, toIsoDate } from '#src/date/iso-date.js'
 import { describe, expect, test } from 'vitest'
 
 describe('toIsoDate', () => {
@@ -44,6 +44,24 @@ describe('isIsoDate', () => {
 
   test('should reject a leap day outside a leap year', () => {
     expect(isIsoDate('2026-02-29')).toBe(false)
+  })
+})
+
+describe('fromIsoDate', () => {
+  test('should return local midnight', () => {
+    const date = fromIsoDate(parseIsoDate('2026-08-30'))
+
+    expect([date.getHours(), date.getMinutes()]).toEqual([0, 0])
+  })
+
+  test('should keep the calendar day', () => {
+    const date = fromIsoDate(parseIsoDate('2026-08-30'))
+
+    expect([date.getFullYear(), date.getMonth() + 1, date.getDate()]).toEqual([2026, 8, 30])
+  })
+
+  test('should round trip through toIsoDate', () => {
+    expect(toIsoDate(fromIsoDate(parseIsoDate('2026-01-05')))).toBe('2026-01-05')
   })
 })
 

@@ -11,6 +11,15 @@ for (const route of previewRouteList) {
       await page.goto(route.pattern)
 
       const variants = page.locator('[data-preview-variant]')
+
+      // A page with no variants is an overlay preview. Its dialog lives in the browser's top
+      // layer, outside any element box, so only a full page screenshot captures it.
+      if ((await variants.count()) === 0) {
+        await expect(page).toHaveScreenshot([previewName, 'page.png'])
+
+        return
+      }
+
       await expect(variants.first()).toBeVisible()
 
       for (const variant of await variants.all()) {
