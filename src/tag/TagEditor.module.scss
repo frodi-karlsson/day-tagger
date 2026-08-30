@@ -1,15 +1,12 @@
 .editor {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-3);
-  background-color: var(--color-surface);
+  gap: var(--space-2);
+  padding-block: var(--space-3);
 }
 
 .retired {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .row {
@@ -19,8 +16,8 @@
 }
 
 .swatch {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   flex: none;
   border-radius: var(--radius-full);
 }
@@ -28,34 +25,54 @@
 .input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2);
-  background-color: var(--color-background);
+  padding: var(--space-1) 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background-color: transparent;
   color: var(--color-text);
 }
 
+.input:hover,
+.input:focus {
+  border-bottom-color: var(--color-border-strong);
+}
+
+.slider {
+  flex: 1;
+  min-width: 0;
+  background: none;
+}
+
 .number {
-  width: 4rem;
+  width: 3.5rem;
   flex: none;
 }
 
 .label {
+  flex: none;
+  width: 4rem;
   color: var(--color-text-muted);
   font-size: var(--font-size-2);
+}
+
+/* Every right hand control shares a width, so the column stays flush. */
+.action {
+  flex: none;
+  min-width: 5rem;
 }
 
 .options {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding-left: var(--space-3);
-  border-left: 2px solid var(--color-border);
+  padding-left: var(--space-5);
 }
 
 .problems {
   margin: 0;
-  padding: 0;
+  padding-left: var(--space-5);
   color: var(--color-accent);
   font-size: var(--font-size-2);
+  list-style: none;
 }

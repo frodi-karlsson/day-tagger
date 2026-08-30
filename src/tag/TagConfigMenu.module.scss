@@ -1,29 +1,39 @@
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+/* A hairline between tags, rather than a card around each one. */
+.list > * + * {
+  border-top: 1px solid var(--color-border);
 }
 
 .add {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-strong);
   margin-top: var(--space-3);
 }
 
 .input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2);
-  background-color: var(--color-background);
+  padding: var(--space-1) 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background-color: transparent;
   color: var(--color-text);
+}
+
+.input:hover,
+.input:focus {
+  border-bottom-color: var(--color-border-strong);
 }
 
 .empty {
   margin: 0;
   color: var(--color-text-muted);
+}
+
+.action {
+  flex: none;
+  min-width: 5rem;
 }

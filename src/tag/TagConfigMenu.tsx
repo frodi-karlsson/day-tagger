@@ -47,7 +47,9 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
           }}
         />
 
-        <Button onClick={add}>Add</Button>
+        <Button class={styles.action} onClick={add}>
+          Add
+        </Button>
       </div>
     </Dialog>
   )

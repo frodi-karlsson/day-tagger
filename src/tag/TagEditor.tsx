@@ -48,8 +48,9 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
         />
 
         <Button
-          variant={props.tag.active ? 'secondary' : 'ghost'}
+          variant="secondary"
           size="sm"
+          class={styles.action}
           onClick={() => {
             change({ ...props.tag, active: !props.tag.active })
           }}
@@ -63,7 +64,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
 
         <input
           type="range"
-          class={styles.input}
+          class={styles.slider}
           aria-label="Tag colour"
           min="0"
           max="359"
@@ -88,8 +89,9 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
               />
 
               <Button
-                variant={option.active ? 'secondary' : 'ghost'}
+                variant="secondary"
                 size="sm"
+                class={styles.action}
                 onClick={() => {
                   change(toggleOption(props.tag, option.id, option))
                 }}
@@ -111,7 +113,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
             }}
           />
 
-          <Button size="sm" onClick={addOption}>
+          <Button size="sm" class={styles.action} onClick={addOption}>
             Add
           </Button>
         </div>
