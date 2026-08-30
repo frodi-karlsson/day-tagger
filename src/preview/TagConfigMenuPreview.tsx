@@ -1,4 +1,5 @@
 import { TagConfigMenu } from '#src/tag/TagConfigMenu.js'
+import type { DayLog } from '#src/day/day.model.js'
 import type { TagConfig, TagId } from '#src/tag/tag.model.js'
 import { createSignal, type JSX } from 'solid-js'
 
@@ -20,6 +21,7 @@ export function TagConfigMenuPreview(props: TagConfigMenuPreviewProps): JSX.Elem
     <TagConfigMenu
       open={open()}
       config={config()}
+      log={props.log ?? { schemaVersion: 1, days: {} }}
       initialEditing={props.initialEditing}
       onSave={save}
       onClose={close}
@@ -30,4 +32,5 @@ export function TagConfigMenuPreview(props: TagConfigMenuPreviewProps): JSX.Elem
 export interface TagConfigMenuPreviewProps {
   initialConfig: TagConfig
   initialEditing?: TagId
+  log?: DayLog
 }

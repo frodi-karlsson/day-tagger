@@ -1,0 +1,15 @@
+---
+import { ConfirmDialogPreview } from '#src/preview/ConfirmDialogPreview.js'
+import PreviewPage from '#src/preview/PreviewPage.astro'
+---
+
+<PreviewPage title="Confirm">
+  <ConfirmDialogPreview
+    title="This changes days you already tagged"
+    message="4 tagged days no longer match these tags."
+    detail="Those days keep their answers, but you will have to fix them before they can be saved again."
+    confirmLabel="Save anyway"
+    countdownSeconds={0}
+    client:load
+  />
+</PreviewPage>
