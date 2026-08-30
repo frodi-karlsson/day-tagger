@@ -14,7 +14,10 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
-      // Glyph antialiasing differs between macOS and linux even with the font bundled.
+      // Glyph antialiasing differs between macOS and linux even with the font bundled. A
+      // looser per pixel tolerance ignores those small deltas, while a real colour or layout
+      // change stays far above it. The ratio is only a backstop.
+      threshold: 0.35,
       maxDiffPixelRatio: 0.02,
       pathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}-{projectName}{ext}',
     },
