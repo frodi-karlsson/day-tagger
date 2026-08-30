@@ -14,7 +14,9 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
-      maxDiffPixelRatio: 0.01,
+      // Glyph antialiasing differs between macOS and linux even with the font bundled. The
+      // images are small, so a fixed budget is steadier than a ratio.
+      maxDiffPixels: 300,
       pathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}-{projectName}{ext}',
     },
   },
