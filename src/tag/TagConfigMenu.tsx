@@ -3,8 +3,9 @@ import { Button } from '#src/button/Button.js'
 import { Dialog } from '#src/dialog/Dialog.js'
 import { TagEditor } from '#src/tag/TagEditor.js'
 import { addTag, updateTag } from '#src/tag/tag.edit.js'
+import { validateTag } from '#src/tag/tag.validation.js'
 import type { Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
-import { createSignal, For, Show, type JSX } from 'solid-js'
+import { createEffect, createSignal, For, on, Show, untrack, type JSX } from 'solid-js'
 
 /**
  * Tags as a list, with one tag's settings behind an edit step. Keeping the detail out of the
@@ -13,9 +14,20 @@ import { createSignal, For, Show, type JSX } from 'solid-js'
 export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
   const [editing, setEditing] = createSignal<TagId | 'new' | undefined>(props.initialEditing)
   const [newLabel, setNewLabel] = createSignal('')
+  const [draft, setDraft] = createSignal<TagConfig>(untrack(() => props.config))
+
+  createEffect(
+    on(
+      () => props.open,
+      () => {
+        setDraft(() => props.config)
+        setEditing(props.initialEditing)
+      },
+    ),
+  )
 
   function edited(): Tag | undefined {
-    return props.config.tags.find((tag) => tag.id === editing())
+    return draft().tags.find((tag) => tag.id === editing())
   }
 
   function title(): string {
@@ -38,22 +50,30 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
       return
     }
 
-    const next = addTag(props.config, label)
+    const next = addTag(draft(), label)
 
-    props.onChange(next)
-    setEditing(next.tags.at(-1)?.id)
+    setDraft(next)
+    setEditing(next.tags.find((tag) => tag.label === label)?.id)
   }
 
   function liveTags(): Tag[] {
-    return props.config.tags.filter((tag) => tag.active)
+    return draft().tags.filter((tag) => tag.active)
   }
 
   function replace(tag: Tag): void {
-    props.onChange(updateTag(props.config, tag.id, () => tag))
+    setDraft((current) => updateTag(current, tag.id, () => tag))
 
     if (!tag.active) {
       setEditing(undefined)
     }
+  }
+
+  function isValid(): boolean {
+    return draft().tags.every((tag) => validateTag(tag).length === 0)
+  }
+
+  function save(): void {
+    props.onSave(draft())
   }
 
   function back(): void {
@@ -66,6 +86,11 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
       title={title()}
       onClose={props.onClose}
       onBack={editing() === undefined ? undefined : back}
+      footer={
+        <Button disabled={!isValid()} onClick={save}>
+          Save
+        </Button>
+      }
     >
       <Show when={editing() === 'new'}>
         <div class={styles.row}>
@@ -130,7 +155,7 @@ function swatch(hue: number): string {
 export interface TagConfigMenuProps {
   open: boolean
   config: TagConfig
-  onChange: (config: TagConfig) => void
+  onSave: (config: TagConfig) => void
   onClose: () => void
   /** Opens straight into one tag's settings rather than the list. */
   initialEditing?: TagId

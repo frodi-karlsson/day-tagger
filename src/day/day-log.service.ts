@@ -1,4 +1,5 @@
 import type { IsoDate } from '#src/date/iso-date.js'
+import { setAnswers } from '#src/day/day-answers.js'
 import { isDayLog } from '#src/day/day.guard.js'
 import type { DayEntry, DayLog } from '#src/day/day.model.js'
 import { inject, registerDI } from '#src/di/di.js'
@@ -47,19 +48,9 @@ export class DayLogService {
 
   /** Returns a new log with the tag's answers set. An undefined value removes the tag. */
   writeAnswers(log: DayLog, date: IsoDate, tagId: TagId, answers: ChoiceId[] | undefined): DayLog {
-    const entry = this.readDay(log, date)
+    const entry = setAnswers(this.readDay(log, date), tagId, answers)
 
-    if (answers === undefined) {
-      const remaining = Object.entries(entry.answers).filter(([id]) => id !== tagId)
-
-      return this.withDay(log, date, Object.fromEntries(remaining))
-    }
-
-    return this.withDay(log, date, { ...entry.answers, [tagId]: answers })
-  }
-
-  private withDay(log: DayLog, date: IsoDate, answers: Record<TagId, ChoiceId[]>): DayLog {
-    return { ...log, days: { ...log.days, [date]: { date, answers } } }
+    return { ...log, days: { ...log.days, [date]: entry } }
   }
 
   private discard(reason: string): DayLog {

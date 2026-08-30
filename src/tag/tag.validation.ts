@@ -1,5 +1,5 @@
 import { isHue } from '#src/tag/tag.color.js'
-import type { ChoiceId, Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
+import type { ChoiceId, Tag } from '#src/tag/tag.model.js'
 
 /** Checks a day's answers for one tag. An empty result means the selection is legal. */
 export function validateSelection(tag: Tag, selected: ChoiceId[]): SelectionProblem[] {
@@ -102,30 +102,9 @@ export function validateTag(tag: Tag): TagProblem[] {
   return problems
 }
 
-/** Checks rules that only exist across tags. Per tag rules live in validateTag. */
-export function validateTagConfig(config: TagConfig): TagConfigProblem[] {
-  const problems: TagConfigProblem[] = []
-  const seen = new Set<TagId>()
-
-  for (const tag of config.tags) {
-    if (seen.has(tag.id)) {
-      problems.push({ code: 'duplicate-tag-id', tagId: tag.id })
-    }
-
-    seen.add(tag.id)
-  }
-
-  return problems
-}
-
 export interface TagProblem {
   code: TagProblemCode
   optionId?: ChoiceId
-}
-
-export interface TagConfigProblem {
-  code: 'duplicate-tag-id'
-  tagId: TagId
 }
 
 export type SelectionProblem =

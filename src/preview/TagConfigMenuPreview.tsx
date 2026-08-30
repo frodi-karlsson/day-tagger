@@ -7,8 +7,9 @@ export function TagConfigMenuPreview(props: TagConfigMenuPreviewProps): JSX.Elem
   const [config, setConfig] = createSignal<TagConfig>(props.initialConfig)
   const [open, setOpen] = createSignal(true)
 
-  function change(next: TagConfig): void {
+  function save(next: TagConfig): void {
     setConfig(next)
+    setOpen(false)
   }
 
   function close(): void {
@@ -20,7 +21,7 @@ export function TagConfigMenuPreview(props: TagConfigMenuPreviewProps): JSX.Elem
       open={open()}
       config={config()}
       initialEditing={props.initialEditing}
-      onChange={change}
+      onSave={save}
       onClose={close}
     />
   )

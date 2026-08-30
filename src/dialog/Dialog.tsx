@@ -57,6 +57,10 @@ export function Dialog(props: DialogProps): JSX.Element {
       </div>
 
       <div class={styles.body}>{props.children}</div>
+
+      <Show when={props.footer !== undefined}>
+        <div class={styles.footer}>{props.footer}</div>
+      </Show>
     </dialog>
   )
 }
@@ -68,4 +72,6 @@ export interface DialogProps {
   /** When given, the header offers a way back to whatever opened this view. */
   onBack?: () => void
   children?: JSX.Element
+  /** Sits below the body and stays put while it scrolls. */
+  footer?: JSX.Element
 }

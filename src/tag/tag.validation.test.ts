@@ -1,5 +1,5 @@
-import type { Choice, ChoiceId, Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
-import { validateSelection, validateTag, validateTagConfig } from '#src/tag/tag.validation.js'
+import type { Choice, ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
+import { validateSelection, validateTag } from '#src/tag/tag.validation.js'
 import { describe, expect, test } from 'vitest'
 
 const wine = choice('wine')
@@ -151,26 +151,6 @@ describe('validateTag', () => {
   })
 })
 
-describe('validateTagConfig', () => {
-  test('should accept tags with distinct ids', () => {
-    const config = tagConfig([plainTag(), { ...plainTag(), id: tagId('sleep') }])
-
-    expect(validateTagConfig(config)).toEqual([])
-  })
-
-  test('should name the tag that is duplicated', () => {
-    const config = tagConfig([plainTag(), plainTag()])
-
-    expect(validateTagConfig(config)).toEqual([
-      { code: 'duplicate-tag-id', tagId: tagId('alcohol') },
-    ])
-  })
-
-  test('should accept an empty config', () => {
-    expect(validateTagConfig(tagConfig([]))).toEqual([])
-  })
-})
-
 function choiceId(value: string): ChoiceId {
   return value as ChoiceId
 }
@@ -189,8 +169,4 @@ function plainTag(): Tag {
 
 function choiceTag(minAnswers: number, maxAnswers: number, options = [wine, liquor]): Tag {
   return { ...plainTag(), choices: { options, minAnswers, maxAnswers } }
-}
-
-function tagConfig(tags: Tag[]): TagConfig {
-  return { schemaVersion: 1, tags }
 }

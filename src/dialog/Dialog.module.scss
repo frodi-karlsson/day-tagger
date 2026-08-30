@@ -39,3 +39,12 @@
   padding: var(--space-4);
   overflow-y: auto;
 }
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  flex: none;
+}
