@@ -1,16 +1,32 @@
 ---
 import { App } from '#src/app/App.js'
 import '#src/design/index.scss'
+
+const description = 'Tag your days with tags you define yourself.'
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
+
     <title>Day Tagger</title>
+    <meta name="description" content={description} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <meta name="theme-color" content="#fbf6ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#211f1c" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-title" content="Day Tagger" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Day Tagger" />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/icon-512.png" />
   </head>
   <body>
     <App client:load />

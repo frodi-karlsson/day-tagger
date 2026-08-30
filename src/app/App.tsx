@@ -9,6 +9,7 @@ import { DayLogService } from '#src/day/day-log.service.js'
 import { readDay, writeDay } from '#src/day/day-log.js'
 import type { DayEntry } from '#src/day/day.model.js'
 import { inject } from '#src/di/di.js'
+import { registerServiceWorker } from '#src/pwa/service-worker.js'
 import { Store } from '#src/store/store.js'
 import { TagConfigMenu } from '#src/tag/TagConfigMenu.js'
 import { TagConfigService } from '#src/tag/tag-config.service.js'
@@ -21,6 +22,8 @@ export function App(): JSX.Element {
   const [unreadable, setUnreadable] = createSignal<Unreadable | undefined>()
 
   onMount(() => {
+    registerServiceWorker()
+
     const tags = inject(TagConfigService).load()
     const days = inject(DayLogService).load()
 
