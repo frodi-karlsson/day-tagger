@@ -57,6 +57,6 @@ export interface StoreState {
 }
 
 /** Which overlay covers the calendar, if any. */
-export type OpenMenu = 'day' | 'tags' | undefined
+export type OpenMenu = 'day' | 'tags' | 'backup' | undefined
 
 registerDI(Store, () => new Store())

@@ -1,6 +1,8 @@
 import styles from './App.module.scss'
 import { loadPersistedState, type Unreadable } from '#src/app/load-state.js'
 import { RecoveryNotice } from '#src/app/RecoveryNotice.js'
+import type { Backup } from '#src/backup/backup.js'
+import { BackupMenu } from '#src/backup/BackupMenu.js'
 import { Button } from '#src/button/Button.js'
 import { CalendarView } from '#src/calendar/CalendarView.js'
 import { ConfirmDialog } from '#src/dialog/ConfirmDialog.js'
@@ -61,6 +63,14 @@ export function App(): JSX.Element {
     store.set('openMenu', undefined)
   }
 
+  function restore(backup: Backup): void {
+    store.set('tagConfig', backup.tagConfig)
+    store.set('dayLog', backup.dayLog)
+    inject(TagConfigService).save(backup.tagConfig)
+    inject(DayLogService).save(backup.dayLog)
+    store.set('openMenu', undefined)
+  }
+
   function openDay(date: IsoDate): void {
     store.set('selectedDate', date)
     store.set('openMenu', 'day')
@@ -95,6 +105,16 @@ export function App(): JSX.Element {
               >
                 Tags
               </Button>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  store.set('openMenu', 'backup')
+                }}
+              >
+                Backup
+              </Button>
             </div>
           </div>
 
@@ -125,6 +145,16 @@ export function App(): JSX.Element {
             config={store.get('tagConfig')}
             log={store.get('dayLog')}
             onSave={saveTags}
+            onClose={() => {
+              store.set('openMenu', undefined)
+            }}
+          />
+
+          <BackupMenu
+            open={store.get('openMenu') === 'backup'}
+            config={store.get('tagConfig')}
+            log={store.get('dayLog')}
+            onRestore={restore}
             onClose={() => {
               store.set('openMenu', undefined)
             }}
