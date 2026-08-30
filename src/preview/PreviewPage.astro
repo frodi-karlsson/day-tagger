@@ -22,8 +22,20 @@ const { title } = Astro.props
 </html>
 
 <style>
+  /* Bundled rather than inherited from the system stack, so glyph metrics are identical on
+     every machine and screenshots taken on one OS compare cleanly on another. */
+  @font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: block;
+    src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+      format('woff2-variations');
+  }
+
   /* Fixed rather than tokenised, so retuning --color-background cannot churn every snapshot. */
   main {
+    font-family: 'Inter Variable', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
