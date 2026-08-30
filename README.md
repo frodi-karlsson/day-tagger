@@ -36,6 +36,13 @@ tests, Prettier and ESLint for uniformity.
 `pnpm check` is the one to run before committing. It writes formatting changes rather than
 only reporting them.
 
+## Hosting
+
+Cloudflare Pages, at `day-tagger.frodikarlsson.com`.
+
+The project, its custom domain and the DNS record live in `tofu/` and are applied by hand.
+Deploying is `pnpm deploy`, which builds and uploads. Nothing publishes on its own.
+
 ## Status
 
 Early. The toolchain, a DI registry, and a handful of services are in place. The calendar,

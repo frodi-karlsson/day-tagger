@@ -81,3 +81,22 @@ jobs:
           name: playwright-results
           path: test-results/
           retention-days: 7
+
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up opentofu
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+
+      - name: Format
+        run: tofu fmt -check -recursive
+        working-directory: tofu
+
+      # No credentials here on purpose. Applying is done by hand, because the token that can
+      # edit DNS should not be sitting in a build.
+      - name: Validate
+        run: tofu init -backend=false && tofu validate
+        working-directory: tofu

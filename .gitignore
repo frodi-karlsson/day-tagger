@@ -26,3 +26,10 @@ pnpm-debug.log*
 # playwright
 test-results/
 playwright-report/
+
+# Tofu / Terraform
+*.tfvars
+*.tfvars.json
+terraform.tfstate*
+.terraform/
+.terraform.lock.hcl

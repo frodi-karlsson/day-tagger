@@ -14,6 +14,7 @@
     "dev": "astro dev",
     "build": "APP_ENV=${APP_ENV:-prod} astro build",
     "preview": "astro preview",
+    "deploy": "pnpm build && wrangler pages deploy dist --project-name=day-tagger",
     "astro": "astro",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
@@ -53,6 +54,7 @@
     "sass-embedded": "^1.103.1",
     "typescript": "^6",
     "typescript-eslint": "^8",
-    "vitest": "^4"
+    "vitest": "^4",
+    "wrangler": "^4"
   }
 }
