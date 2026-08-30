@@ -1,7 +1,8 @@
 import styles from './TagField.module.scss'
 import { Button } from '#src/button/Button.js'
 import type { Choice, ChoiceId, Tag } from '#src/tag/tag.model.js'
-import { isAnswerDisabled, toggleAnswer } from '#src/tag/tag.selection.js'
+import { classNames } from '#src/string/class-names.js'
+import { isAnswerDisabled, toggleAnswer, visibleOptions } from '#src/tag/tag.selection.js'
 import { validateSelection, type SelectionProblem } from '#src/tag/tag.validation.js'
 import { For, Show, type JSX } from 'solid-js'
 
@@ -16,7 +17,7 @@ export function TagField(props: TagFieldProps): JSX.Element {
   }
 
   function options(): Choice[] {
-    return props.tag.choices?.options.filter((option) => option.active) ?? []
+    return visibleOptions(props.tag, answers())
   }
 
   function toggleTag(): void {
@@ -43,6 +44,7 @@ export function TagField(props: TagFieldProps): JSX.Element {
             {(option) => (
               <Button
                 size="sm"
+                class={classNames(!option.active && styles.stale)}
                 variant={answers().includes(option.id) ? 'primary' : 'secondary'}
                 disabled={isAnswerDisabled(props.tag, answers(), option.id)}
                 onClick={() => {

@@ -1,5 +1,5 @@
 import type { Choice, ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
-import { isAnswerDisabled, toggleAnswer } from '#src/tag/tag.selection.js'
+import { isAnswerDisabled, toggleAnswer, visibleOptions } from '#src/tag/tag.selection.js'
 import { describe, expect, test } from 'vitest'
 
 const wine = choice('wine')
@@ -101,5 +101,50 @@ function choiceTag(minAnswers: number, maxAnswers: number): Tag {
   return {
     ...plainTag(),
     choices: { options: [wine, liquor, cider], minAnswers, maxAnswers },
+  }
+}
+
+describe('visibleOptions', () => {
+  test('should offer every active option', () => {
+    expect(visibleOptions(choiceTag(0, 3), []).map((option) => option.id)).toEqual([
+      wine.id,
+      liquor.id,
+      cider.id,
+    ])
+  })
+
+  test('should hide a deleted option nothing selected', () => {
+    const tag = withDeleted('cider')
+
+    expect(visibleOptions(tag, [wine.id]).map((option) => option.id)).toEqual([wine.id, liquor.id])
+  })
+
+  test('should keep a deleted option a day still holds', () => {
+    const tag = withDeleted('cider')
+
+    expect(visibleOptions(tag, [cider.id]).map((option) => option.id)).toEqual([
+      wine.id,
+      liquor.id,
+      cider.id,
+    ])
+  })
+
+  test('should return nothing for a tag with no choices', () => {
+    expect(visibleOptions(plainTag(), [])).toEqual([])
+  })
+})
+
+function withDeleted(id: string): Tag {
+  const tag = choiceTag(0, 3)
+
+  return {
+    ...tag,
+    choices: {
+      options: (tag.choices?.options ?? []).map((option) =>
+        option.id === id ? { ...option, active: false } : option,
+      ),
+      minAnswers: 0,
+      maxAnswers: 3,
+    },
   }
 }

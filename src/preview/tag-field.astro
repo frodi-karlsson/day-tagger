@@ -10,6 +10,16 @@ const beer = { id: 'beer' as ChoiceId, label: 'Beer', active: true }
 
 const plain: Tag = { id: 'walked' as TagId, label: 'Walked', hue: 200, active: true }
 
+const retiredBeer = { id: 'beer-old' as ChoiceId, label: 'Beer', active: false }
+
+const withDeleted: Tag = {
+  id: 'alcohol' as TagId,
+  label: 'Alcohol',
+  hue: 40,
+  active: true,
+  choices: { options: [wine, liquor, retiredBeer], minAnswers: 0, maxAnswers: 3 },
+}
+
 const multi: Tag = {
   id: 'alcohol' as TagId,
   label: 'Alcohol',
@@ -50,6 +60,10 @@ const single: Tag = {
 
   <PreviewVariant description="Single answer, selecting replaces">
     <TagFieldPreview tag={single} initialAnswers={[liquor.id]} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="Holding an option that was since deleted">
+    <TagFieldPreview tag={withDeleted} initialAnswers={[wine.id, retiredBeer.id]} client:load />
   </PreviewVariant>
 
   <PreviewVariant description="No choices, applied by the tag alone">

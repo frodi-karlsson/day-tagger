@@ -21,3 +21,9 @@
   font-size: var(--font-size-2);
   list-style: none;
 }
+
+/* A deleted option still held by this day. Shown only so it can be taken off. */
+.stale {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
