@@ -27,7 +27,10 @@ const { description } = Astro.props
     font-size: var(--font-size-2);
   }
 
+  /* Fixed so the screenshot is a constant size. Sized by content, subpixel differences in
+     text advance widths change the box by a pixel or two and comparison refuses to run. */
   div {
+    width: 420px;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
