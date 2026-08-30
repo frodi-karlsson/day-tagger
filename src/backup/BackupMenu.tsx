@@ -73,7 +73,9 @@ export function BackupMenu(props: BackupMenuProps): JSX.Element {
           </p>
 
           <div class={styles.actions}>
-            <Button onClick={save}>Save a copy</Button>
+            <Button variant="secondary" onClick={save}>
+              Save a copy
+            </Button>
           </div>
         </section>
 

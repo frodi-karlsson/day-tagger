@@ -2,6 +2,7 @@ import styles from './TagField.module.scss'
 import { Button } from '#src/button/Button.js'
 import type { Choice, ChoiceId, Tag } from '#src/tag/tag.model.js'
 import { classNames } from '#src/string/class-names.js'
+import { swatchColor } from '#src/tag/tag-swatch.js'
 import { isAnswerDisabled, toggleAnswer, visibleOptions } from '#src/tag/tag.selection.js'
 import { validateSelection, type SelectionProblem } from '#src/tag/tag.validation.js'
 import { For, Show, type JSX } from 'solid-js'
@@ -35,6 +36,7 @@ export function TagField(props: TagFieldProps): JSX.Element {
   return (
     <div class={styles.field}>
       <Button variant={applied() ? 'primary' : 'secondary'} onClick={toggleTag}>
+        <span class={styles.swatch} style={{ 'background-color': swatchColor(props.tag.hue) }} />
         {props.tag.label}
       </Button>
 

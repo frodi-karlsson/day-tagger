@@ -52,8 +52,9 @@
   --color-accent-hover: var(--color-primary-400);
   --color-accent-text: var(--color-neutral-900);
   --color-focus: var(--color-primary-500);
-  --tag-lightness: 0.62;
-  --tag-chroma: 0.17;
+  --color-danger: var(--color-primary-700);
+  --tag-lightness: 0.68;
+  --tag-chroma: 0.13;
 }
 
 // Medium dark page, panels recede darker rather than lifting lighter.
@@ -71,8 +72,9 @@
   --color-accent-hover: var(--color-primary-800);
   --color-accent-text: var(--color-neutral-100);
   --color-focus: var(--color-primary-400);
+  --color-danger: var(--color-primary-300);
   --tag-lightness: 0.76;
-  --tag-chroma: 0.15;
+  --tag-chroma: 0.12;
 }
 
 :root {

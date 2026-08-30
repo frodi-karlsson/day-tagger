@@ -17,10 +17,11 @@ import { inject } from '#src/di/di.js'
 import { assert } from '#src/error/assert.js'
 import { Store } from '#src/store/store.js'
 import { classNames } from '#src/string/class-names.js'
+import { swatchColor } from '#src/tag/tag-swatch.js'
 import type { Tag } from '#src/tag/tag.model.js'
 import { createSignal, For, onMount, Show, type JSX } from 'solid-js'
 
-/** Days below this carry no weight, so the row is shown but played down. */
+/** Below this many sightings a difference is noise, so the row is shown but played down. */
 const thinEvidence = 5
 
 /** How often each tag happens, and what tends to follow it. */
@@ -54,7 +55,13 @@ export function AnalysisPage(): JSX.Element {
   function effect(): Aspect | undefined {
     const chosen = aspects().find((aspect) => aspectKey(aspect) === effectKey())
 
-    return chosen ?? aspects().find((aspect) => !isCause(aspect))
+    if (chosen !== undefined) {
+      return chosen
+    }
+
+    // Prefer a different tag. An option of the same tag is correlated with it by construction,
+    // so opening on that pair would show a strong result that means nothing.
+    return aspects().find((aspect) => aspect.tagId !== cause()?.tagId) ?? aspects().at(1)
   }
 
   function isCause(aspect: Aspect): boolean {
@@ -181,9 +188,7 @@ export function AnalysisPage(): JSX.Element {
               </div>
 
               <div class={styles.control}>
-                <span class={styles.label} />
-
-                <Button variant="ghost" size="sm" onClick={swap}>
+                <Button variant="secondary" size="sm" onClick={swap}>
                   Swap them
                 </Button>
               </div>
@@ -193,7 +198,7 @@ export function AnalysisPage(): JSX.Element {
 
                 <input
                   type="number"
-                  class={styles.field}
+                  class={classNames(styles.field, styles.number)}
                   aria-label="Days to look ahead"
                   min="0"
                   max="14"
@@ -202,6 +207,8 @@ export function AnalysisPage(): JSX.Element {
                     setWindowDays(Math.max(Number(event.currentTarget.value), 0))
                   }}
                 />
+
+                <span class={styles.unit}>days</span>
               </div>
             </div>
 
@@ -219,7 +226,7 @@ export function AnalysisPage(): JSX.Element {
                       <tr>
                         <th />
                         <th>{effectName()}</th>
-                        <th>not</th>
+                        <th>not {effectName()}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -231,7 +238,7 @@ export function AnalysisPage(): JSX.Element {
                         </td>
                       </tr>
                       <tr>
-                        <th>not</th>
+                        <th>not {causeName()}</th>
                         <td>{association().withoutCause.withEffect}</td>
                         <td>
                           {association().withoutCause.total - association().withoutCause.withEffect}
@@ -248,17 +255,12 @@ export function AnalysisPage(): JSX.Element {
               )}
             </Show>
 
-            <h2 class={styles.heading}>Everything else</h2>
+            <h2 class={styles.heading}>Everything else, strongest first</h2>
 
             <ul class={styles.rows}>
               <For each={ranked()}>
                 {(entry) => (
-                  <li
-                    class={classNames(
-                      styles.row,
-                      entry.association.withCause.total < thinEvidence && styles.thin,
-                    )}
-                  >
+                  <li class={classNames(styles.row, isThin(entry.association) && styles.thin)}>
                     <button
                       type="button"
                       class={styles.pick}
@@ -266,6 +268,10 @@ export function AnalysisPage(): JSX.Element {
                         setEffectKey(aspectKey(entry.aspect))
                       }}
                     >
+                      <span
+                        class={styles.swatch}
+                        style={{ 'background-color': swatchColor(hueOf(entry.aspect, tags())) }}
+                      />
                       {describeAspect(entry.aspect, tags())}
                     </button>
 
@@ -293,8 +299,20 @@ export function AnalysisPage(): JSX.Element {
   )
 }
 
+function hueOf(aspect: Aspect, tags: Tag[]): number {
+  return tags.find((tag) => tag.id === aspect.tagId)?.hue ?? 0
+}
+
 function strength(association: Association): number {
   return Math.abs(association.difference)
+}
+
+/**
+ * How often the effect turned up at all. The number of days the cause happened is the same for
+ * every row in the list, so it can never tell one row from another.
+ */
+function isThin(association: Association): boolean {
+  return association.withCause.withEffect + association.withoutCause.withEffect < thinEvidence
 }
 
 function summarise(aspect: Aspect | undefined, series: Observation[], tags: Tag[]): string {
@@ -345,7 +363,7 @@ function percent(ratio: number): string {
 function signed(difference: number): string {
   const points = Math.round(difference * 100)
 
-  return `${points > 0 ? '+' : ''}${String(points)}`
+  return `${points > 0 ? '+' : ''}${String(points)} pts`
 }
 
 interface Ranked {

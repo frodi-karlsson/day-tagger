@@ -1,5 +1,6 @@
 import styles from './TagConfigMenu.module.scss'
 import { Button } from '#src/button/Button.js'
+import { swatchColor } from '#src/tag/tag-swatch.js'
 import type { DayLog } from '#src/day/day.model.js'
 import { daysAffectedBy } from '#src/day/day-impact.js'
 import { ConfirmDialog } from '#src/dialog/ConfirmDialog.js'
@@ -129,7 +130,7 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
               }}
             />
 
-            <Button class={styles.action} onClick={create}>
+            <Button variant="secondary" class={styles.action} onClick={create}>
               Create
             </Button>
           </div>
@@ -146,7 +147,10 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
               <For each={liveTags()}>
                 {(tag, index) => (
                   <li class={styles.item}>
-                    <span class={styles.swatch} style={{ 'background-color': swatch(tag.hue) }} />
+                    <span
+                      class={styles.swatch}
+                      style={{ 'background-color': swatchColor(tag.hue) }}
+                    />
                     <span class={styles.name}>{tag.label}</span>
 
                     <Button
@@ -190,7 +194,9 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
           </Show>
 
           <div class={styles.add}>
-            <Button onClick={openNew}>Add tag</Button>
+            <Button variant="secondary" onClick={openNew}>
+              Add tag
+            </Button>
           </div>
         </Show>
       </Dialog>
@@ -208,10 +214,6 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
       />
     </>
   )
-}
-
-function swatch(hue: number): string {
-  return `oklch(var(--tag-lightness) var(--tag-chroma) ${String(hue)})`
 }
 
 export interface TagConfigMenuProps {

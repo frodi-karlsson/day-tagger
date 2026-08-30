@@ -17,13 +17,21 @@
 .problems {
   margin: 0;
   padding-left: var(--space-4);
-  color: var(--color-text-muted);
+  color: var(--color-danger);
   font-size: var(--font-size-2);
   list-style: none;
 }
 
-/* A deleted option still held by this day. Shown only so it can be taken off. */
+/* A deleted option still held by this day. Shown only so it can be taken off. The strike
+   already says that, so it does not also need dimming into illegibility. */
 .stale {
-  opacity: 0.6;
   text-decoration: line-through;
+}
+
+/* The same dot the calendar uses, so a colour learned there means the same thing here. */
+.swatch {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: var(--radius-full);
 }

@@ -1,5 +1,6 @@
 import styles from './TagEditor.module.scss'
 import { Button } from '#src/button/Button.js'
+import { swatchColor } from '#src/tag/tag-swatch.js'
 import { classNames } from '#src/string/class-names.js'
 import { addChoice, updateChoice } from '#src/tag/tag.edit.js'
 import type { ChoiceId, Tag } from '#src/tag/tag.model.js'
@@ -36,7 +37,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
   return (
     <section class={styles.editor}>
       <div class={styles.row}>
-        <span class={styles.swatch} style={{ 'background-color': swatch(props.tag.hue) }} />
+        <span class={styles.swatch} style={{ 'background-color': swatchColor(props.tag.hue) }} />
 
         <input
           class={styles.input}
@@ -59,7 +60,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
         </Button>
       </div>
 
-      <div class={styles.row}>
+      <div class={classNames(styles.row, styles.sliderRow)}>
         <span class={styles.label}>Colour</span>
 
         <input
@@ -113,7 +114,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
             }}
           />
 
-          <Button size="sm" class={styles.action} onClick={addOption}>
+          <Button variant="secondary" size="sm" class={styles.action} onClick={addOption}>
             Add
           </Button>
         </div>
@@ -162,10 +163,6 @@ function renameOption(tag: Tag, choiceId: ChoiceId, label: string): Tag {
 
 function deleteOption(tag: Tag, choiceId: ChoiceId): Tag {
   return updateChoice(tag, choiceId, (choice) => ({ ...choice, active: false }))
-}
-
-function swatch(hue: number): string {
-  return `oklch(var(--tag-lightness) var(--tag-chroma) ${String(hue)})`
 }
 
 export interface TagEditorProps {

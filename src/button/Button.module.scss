@@ -16,7 +16,7 @@
 }
 
 .button:disabled {
-  opacity: 0.5;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
@@ -51,15 +51,18 @@
 
 .sm {
   padding: var(--space-1) var(--space-3);
+  min-height: 2.25rem;
   font-size: var(--font-size-2);
 }
 
 .md {
   padding: var(--space-2) var(--space-4);
+  min-height: 2.75rem;
   font-size: var(--font-size-3);
 }
 
 .lg {
   padding: var(--space-3) var(--space-5);
+  min-height: 2.75rem;
   font-size: var(--font-size-4);
 }

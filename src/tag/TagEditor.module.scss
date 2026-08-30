@@ -38,10 +38,41 @@
   border-bottom-color: var(--color-border-strong);
 }
 
+/* The track carries the whole wheel, so the control shows what it is choosing between rather
+   than being a plain bar next to a swatch. */
 .slider {
   flex: 1;
   min-width: 0;
-  background: none;
+  height: 1rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    oklch(var(--tag-lightness) var(--tag-chroma) 0),
+    oklch(var(--tag-lightness) var(--tag-chroma) 60),
+    oklch(var(--tag-lightness) var(--tag-chroma) 120),
+    oklch(var(--tag-lightness) var(--tag-chroma) 180),
+    oklch(var(--tag-lightness) var(--tag-chroma) 240),
+    oklch(var(--tag-lightness) var(--tag-chroma) 300),
+    oklch(var(--tag-lightness) var(--tag-chroma) 360)
+  );
+  appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--color-surface);
+  border-radius: var(--radius-full);
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--color-text);
+  appearance: none;
+}
+
+/* The colour row has no action button, so it needs the same gutter to stay in the column. */
+.sliderRow {
+  padding-right: 5rem;
 }
 
 .number {
@@ -72,7 +103,7 @@
 .problems {
   margin: 0;
   padding-left: var(--space-5);
-  color: var(--color-accent);
+  color: var(--color-danger);
   font-size: var(--font-size-2);
   list-style: none;
 }
