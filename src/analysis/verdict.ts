@@ -1,16 +1,12 @@
 import { ratioOf, type Association } from '#src/analysis/association.js'
 
-/** Below this many days carrying the cause, a claim is worth making but not worth leaning on. */
+/** Days with the cause below which a claim gets a caveat. */
 const minimumSightings = 5
 
-/** A gap this small is not worth a claim, however many days it came from. */
+/** Differences below this are reported as flat. */
 const flatDifference = 0.05
 
-/**
- * What the numbers say, as a claim rather than a pair of percentages. How much the claim can be
- * leaned on is a separate question, answered by sightingsCaveat, so that thin evidence qualifies
- * a result rather than withholding it.
- */
+/** The shape of the relationship. Sample size is answered separately by sightingsCaveat. */
 export function verdictOf(association: Association): Verdict {
   if (association.withCause.total === 0) {
     return { kind: 'none' }
@@ -58,11 +54,7 @@ export function verdictSentence(verdict: Verdict, causeName: string, effectName:
   return `${effectName} is ${multiplier(verdict.times)}× ${likelihood} after ${causeName}.`
 }
 
-/**
- * A caveat to sit under a claim drawn from few days, or nothing when the evidence holds up.
- * Says why the claim is shaky rather than only that it is, so the reader knows what would
- * settle it.
- */
+/** A caveat for a claim drawn from few days, or nothing once there are enough. */
 export function sightingsCaveat(association: Association, causeName: string): string | undefined {
   const sightings = association.withCause.total
 
@@ -75,15 +67,12 @@ export function sightingsCaveat(association: Association, causeName: string): st
   return `Only ${days} with ${causeName} so far, so this can still swing a long way.`
 }
 
-/** One decimal, without a pointless trailing zero. 2 rather than 2.0. */
+/** One decimal, without a trailing zero. 2 rather than 2.0. */
 function multiplier(value: number): string {
   return String(Math.round(value * 10) / 10)
 }
 
-/**
- * The shape of a relationship, before it is put into words. A ratio carries the exact
- * multiplier, so the wording can be precise rather than reaching for "about twice".
- */
+/** The shape of a relationship, before it is put into words. */
 export type Verdict =
   | { kind: 'none' }
   | { kind: 'flat' }

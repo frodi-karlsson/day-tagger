@@ -1,6 +1,7 @@
 import { assert } from '#src/error/assert.js'
 import { previewRouteList } from '#src/preview/preview-routes.const.js'
 import { expect, test } from '@playwright/test'
+import { platform } from 'node:process'
 
 for (const route of previewRouteList) {
   const previewName = route.pattern.split('/').filter(Boolean).pop()
@@ -15,7 +16,7 @@ for (const route of previewRouteList) {
       // A page with no variants is an overlay preview. Its dialog lives in the browser's top
       // layer, outside any element box, so only a full page screenshot captures it.
       if ((await variants.count()) === 0) {
-        await expect(page).toHaveScreenshot([previewName, 'page.png'])
+        await expect(page).toHaveScreenshot([previewName, platform, 'page.png'])
 
         return
       }
@@ -26,7 +27,7 @@ for (const route of previewRouteList) {
         const name = await variant.getAttribute('data-preview-variant')
         assert(name !== null, `A variant on ${route.pattern} has no data-preview-variant value.`)
 
-        await expect(variant).toHaveScreenshot([previewName, `${name}.png`])
+        await expect(variant).toHaveScreenshot([previewName, platform, `${name}.png`])
       }
     })
   })

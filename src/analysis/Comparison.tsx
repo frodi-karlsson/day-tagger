@@ -5,10 +5,7 @@ import { sightingsCaveat, verdictOf, verdictSentence, type Verdict } from '#src/
 import { swatchColor } from '#src/tag/tag-swatch.js'
 import { Show, type JSX } from 'solid-js'
 
-/**
- * One pairing, as a claim with its evidence underneath. Two bars rather than a table, because
- * the whole question is which of them is longer.
- */
+/** One pairing, as a claim with its evidence underneath. */
 export function Comparison(props: ComparisonProps): JSX.Element {
   function verdict(): Verdict {
     return verdictOf(props.association)
@@ -28,8 +25,6 @@ export function Comparison(props: ComparisonProps): JSX.Element {
         <Show when={caveat()}>{(text) => <p class={styles.caveat}>{text()}</p>}</Show>
       </div>
 
-      {/* Nothing to draw when the cause has never happened, since the first bar would be zero
-          out of zero. Thin evidence still gets its bars, qualified by the caveat above. */}
       <Show when={verdict().kind !== 'none'}>
         <div class={styles.bars}>
           <Bar
@@ -54,7 +49,6 @@ export function Comparison(props: ComparisonProps): JSX.Element {
   )
 }
 
-/** The track is decorative, since the figures beside it already say the same thing. */
 function Bar(props: BarProps): JSX.Element {
   function ratio(): number {
     return ratioOf(props.side)

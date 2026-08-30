@@ -1,0 +1,59 @@
+name: Update screenshots
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-screenshots
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Set up node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Update baselines
+        run: pnpm test:visual:update
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain src/preview/screenshots)" ]; then
+            echo "Baselines already match this runner. Nothing to open."
+            exit 0
+          fi
+
+          branch="screenshots/${GITHUB_RUN_ID}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add src/preview/screenshots
+          git commit -m "chore(preview): update screenshot baselines"
+          git push origin "$branch"
+
+          gh pr create \
+            --base "${GITHUB_REF_NAME}" \
+            --title "chore(preview): update screenshot baselines" \
+            --body "Taken by the update screenshots workflow, on the runner that compares them. Review the images before merging, since this rewrites what CI treats as correct."

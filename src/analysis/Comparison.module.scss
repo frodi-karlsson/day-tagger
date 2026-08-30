@@ -16,8 +16,6 @@
   line-height: var(--line-height-2);
 }
 
-/* Attached to the claim rather than alarming about it. The claim is still the thing being read,
-   this only says how far it can be trusted. */
 .caveat {
   margin: 0;
   padding: var(--space-2) var(--space-3);
@@ -60,8 +58,7 @@
   font-size: var(--font-size-2);
 }
 
-/* Both tracks run the full width, so the only thing that differs between the two bars is how
-   much of one is filled. Anything else and the comparison stops being a glance. */
+/* Full width on both bars, so the only thing that differs between them is the fill. */
 .track {
   grid-column: 1 / -1;
   height: 0.5rem;

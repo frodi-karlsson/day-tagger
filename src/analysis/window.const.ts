@@ -1,7 +1,4 @@
-/**
- * The windows worth offering. A free number asks the reader to work out what zero means, and
- * every window here includes the day itself.
- */
+/** Every window includes the day itself. */
 export const windowChoiceList: WindowChoice[] = [
   { days: 0, label: 'on the same day' },
   { days: 1, label: 'by the next day' },
