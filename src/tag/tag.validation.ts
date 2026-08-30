@@ -1,3 +1,4 @@
+import { isHue } from '#src/tag/tag.color.js'
 import type { ChoiceId, Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
 
 /** Checks a day's answers for one tag. An empty result means the selection is legal. */
@@ -52,6 +53,10 @@ export function validateTag(tag: Tag): TagProblem[] {
 
   if (tag.label.trim() === '') {
     problems.push({ code: 'empty-label' })
+  }
+
+  if (!isHue(tag.hue)) {
+    problems.push({ code: 'invalid-hue' })
   }
 
   if (tag.choices === undefined) {
@@ -134,6 +139,7 @@ export type SelectionProblem =
 export type TagProblemCode =
   | 'empty-id'
   | 'empty-label'
+  | 'invalid-hue'
   | 'no-options'
   | 'duplicate-option-id'
   | 'empty-option-label'

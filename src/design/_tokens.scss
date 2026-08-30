@@ -52,6 +52,8 @@
   --color-accent-hover: var(--color-primary-400);
   --color-accent-text: var(--color-neutral-900);
   --color-focus: var(--color-primary-500);
+  --tag-lightness: 0.62;
+  --tag-chroma: 0.17;
 }
 
 // Medium dark page, panels recede darker rather than lifting lighter.
@@ -69,6 +71,8 @@
   --color-accent-hover: var(--color-primary-800);
   --color-accent-text: var(--color-neutral-100);
   --color-focus: var(--color-primary-400);
+  --tag-lightness: 0.76;
+  --tag-chroma: 0.15;
 }
 
 :root {

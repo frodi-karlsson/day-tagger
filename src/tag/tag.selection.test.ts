@@ -94,7 +94,7 @@ function choice(name: string): Choice {
 }
 
 function plainTag(): Tag {
-  return { id: 'alcohol' as TagId, label: 'Alcohol', active: true }
+  return { id: 'alcohol' as TagId, label: 'Alcohol', hue: 40, active: true }
 }
 
 function choiceTag(minAnswers: number, maxAnswers: number): Tag {

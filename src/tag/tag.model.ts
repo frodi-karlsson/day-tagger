@@ -7,6 +7,11 @@ export interface TagConfig {
 export interface Tag {
   id: TagId
   label: string
+  /**
+   * OKLCH hue in degrees. Lightness and chroma come from the theme, so a tag stays legible in
+   * both without storing a colour that only works in one.
+   */
+  hue: number
   /** Switched off rather than deleted, so days already tagged with it still resolve. */
   active: boolean
   /** Absent means a plain on or off tag with nothing to answer. */

@@ -94,6 +94,12 @@ describe('validateTag', () => {
     expect(validateTag(tag)).toEqual([{ code: 'empty-label' }])
   })
 
+  test('should reject a hue off the wheel', () => {
+    const tag = { ...plainTag(), hue: 400 }
+
+    expect(validateTag(tag)).toEqual([{ code: 'invalid-hue' }])
+  })
+
   test('should reject choices with no options', () => {
     const tag = choiceTag(0, 1, [])
 
@@ -178,7 +184,7 @@ function choice(name: string): Choice {
 }
 
 function plainTag(): Tag {
-  return { id: tagId('alcohol'), label: 'Alcohol', active: true }
+  return { id: tagId('alcohol'), label: 'Alcohol', hue: 40, active: true }
 }
 
 function choiceTag(minAnswers: number, maxAnswers: number, options = [wine, liquor]): Tag {
