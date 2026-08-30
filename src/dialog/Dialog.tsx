@@ -1,6 +1,6 @@
 import styles from './Dialog.module.scss'
 import { Button } from '#src/button/Button.js'
-import { createEffect, createSignal, type JSX } from 'solid-js'
+import { createEffect, createSignal, Show, type JSX } from 'solid-js'
 
 /**
  * A modal built on the native dialog element, which supplies the backdrop, escape to close
@@ -30,6 +30,10 @@ export function Dialog(props: DialogProps): JSX.Element {
     props.onClose()
   }
 
+  function back(): void {
+    props.onBack?.()
+  }
+
   return (
     <dialog
       ref={(dialog) => {
@@ -39,6 +43,12 @@ export function Dialog(props: DialogProps): JSX.Element {
       onClose={close}
     >
       <div class={styles.header}>
+        <Show when={props.onBack !== undefined}>
+          <Button variant="ghost" size="sm" aria-label="Back" onClick={back}>
+            ‹
+          </Button>
+        </Show>
+
         <h2 class={styles.title}>{props.title}</h2>
 
         <Button variant="ghost" size="sm" aria-label="Close" onClick={close}>
@@ -55,5 +65,7 @@ export interface DialogProps {
   open: boolean
   title: string
   onClose: () => void
+  /** When given, the header offers a way back to whatever opened this view. */
+  onBack?: () => void
   children?: JSX.Element
 }

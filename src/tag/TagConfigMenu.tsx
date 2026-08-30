@@ -1,58 +1,123 @@
 import styles from './TagConfigMenu.module.scss'
 import { Button } from '#src/button/Button.js'
 import { Dialog } from '#src/dialog/Dialog.js'
+import { classNames } from '#src/string/class-names.js'
 import { TagEditor } from '#src/tag/TagEditor.js'
 import { addTag, updateTag } from '#src/tag/tag.edit.js'
-import type { Tag, TagConfig } from '#src/tag/tag.model.js'
+import type { Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
 import { createSignal, For, Show, type JSX } from 'solid-js'
 
-/** The overlay for building tags. Every edit emits a whole replacement config. */
+/**
+ * Tags as a list, with one tag's settings behind an edit step. Keeping the detail out of the
+ * list is what stops the overlay becoming unreadable once there are more than a few tags.
+ */
 export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
-  const [tagLabel, setTagLabel] = createSignal('')
+  const [editing, setEditing] = createSignal<TagId | 'new' | undefined>(props.initialEditing)
+  const [newLabel, setNewLabel] = createSignal('')
 
-  function add(): void {
-    const label = tagLabel().trim()
+  function edited(): Tag | undefined {
+    return props.config.tags.find((tag) => tag.id === editing())
+  }
+
+  function title(): string {
+    if (editing() === 'new') {
+      return 'New tag'
+    }
+
+    return edited()?.label ?? 'Tags'
+  }
+
+  function openNew(): void {
+    setNewLabel('')
+    setEditing('new')
+  }
+
+  function create(): void {
+    const label = newLabel().trim()
 
     if (label === '') {
       return
     }
 
-    props.onChange(addTag(props.config, label))
-    setTagLabel('')
+    const next = addTag(props.config, label)
+
+    props.onChange(next)
+    setEditing(next.tags.at(-1)?.id)
   }
 
   function replace(tag: Tag): void {
     props.onChange(updateTag(props.config, tag.id, () => tag))
   }
 
+  function back(): void {
+    setEditing(undefined)
+  }
+
   return (
-    <Dialog open={props.open} title="Tag configuration" onClose={props.onClose}>
-      <Show
-        when={props.config.tags.length > 0}
-        fallback={<p class={styles.empty}>No tags yet. Add your first one below.</p>}
-      >
-        <div class={styles.list}>
-          <For each={props.config.tags}>{(tag) => <TagEditor tag={tag} onChange={replace} />}</For>
+    <Dialog
+      open={props.open}
+      title={title()}
+      onClose={props.onClose}
+      onBack={editing() === undefined ? undefined : back}
+    >
+      <Show when={editing() === 'new'}>
+        <div class={styles.row}>
+          <input
+            class={styles.input}
+            aria-label="New tag label"
+            placeholder="Name this tag"
+            value={newLabel()}
+            onInput={(event) => {
+              setNewLabel(event.currentTarget.value)
+            }}
+          />
+
+          <Button class={styles.action} onClick={create}>
+            Create
+          </Button>
         </div>
       </Show>
 
-      <div class={styles.add}>
-        <input
-          class={styles.input}
-          aria-label="New tag label"
-          placeholder="Add a tag"
-          value={tagLabel()}
-          onInput={(event) => {
-            setTagLabel(event.currentTarget.value)
-          }}
-        />
+      <Show when={edited()}>{(tag) => <TagEditor tag={tag()} onChange={replace} />}</Show>
 
-        <Button class={styles.action} onClick={add}>
-          Add
-        </Button>
-      </div>
+      <Show when={editing() === undefined}>
+        <Show
+          when={props.config.tags.length > 0}
+          fallback={<p class={styles.empty}>No tags yet.</p>}
+        >
+          <ul class={styles.list}>
+            <For each={props.config.tags}>
+              {(tag) => (
+                <li class={classNames(styles.item, !tag.active && styles.retired)}>
+                  <span class={styles.swatch} style={{ 'background-color': swatch(tag.hue) }} />
+                  <span class={styles.name}>{tag.label}</span>
+
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    class={styles.action}
+                    onClick={() => {
+                      setEditing(tag.id)
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </li>
+              )}
+            </For>
+          </ul>
+        </Show>
+
+        <div class={styles.add}>
+          <Button onClick={openNew}>Add tag</Button>
+        </div>
+      </Show>
     </Dialog>
   )
+}
+
+function swatch(hue: number): string {
+  return `oklch(var(--tag-lightness) var(--tag-chroma) ${String(hue)})`
 }
 
 export interface TagConfigMenuProps {
@@ -60,4 +125,6 @@ export interface TagConfigMenuProps {
   config: TagConfig
   onChange: (config: TagConfig) => void
   onClose: () => void
+  /** Opens straight into one tag's settings rather than the list. */
+  initialEditing?: TagId
 }
