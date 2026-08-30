@@ -1,0 +1,17 @@
+# Copy to tofu.tfvars and fill in. That file is ignored by git.
+#
+#   cp tofu/tofu.tfvars.example tofu/tofu.tfvars
+
+# Create at https://dash.cloudflare.com/profile/api-tokens with these permissions:
+#   Account | Cloudflare Pages | Edit
+#   Zone    | DNS              | Edit   (frodikarlsson.com)
+cloudflare_token = "your-api-token"
+
+# Any domain's overview page in the dashboard shows both, in the right hand column.
+cloudflare_account_id = "your-account-id"
+cloudflare_zone_id    = "the-zone-id-for-frodikarlsson-com"
+
+# The rest already default to the values below, so leave them out unless you want to change one.
+# project_name = "day-tagger"
+# subdomain    = "day-tagger"
+# hostname     = "day-tagger.frodikarlsson.com"

@@ -8,12 +8,10 @@ should be holding.
 
 ## Running it
 
-Put the values in `tofu.tfvars`, which is ignored by git:
+Copy the example and fill it in. The real file is ignored by git:
 
-```hcl
-cloudflare_token      = "..."  # Pages:Edit and DNS:Edit on the frodikarlsson.com zone
-cloudflare_account_id = "..."
-cloudflare_zone_id    = "..."
+```sh
+cp tofu.tfvars.example tofu.tfvars
 ```
 
 Then:
@@ -22,6 +20,12 @@ Then:
 tofu init
 tofu plan -var-file=tofu.tfvars
 tofu apply -var-file=tofu.tfvars
+```
+
+Once that is applied, ship a build with:
+
+```sh
+pnpm deploy
 ```
 
 State is local and ignored by git. If it is ever lost, `tofu import` rebuilds it from what is
