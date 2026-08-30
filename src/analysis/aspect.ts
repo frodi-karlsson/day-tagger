@@ -1,14 +1,6 @@
 import type { DayEntry } from '#src/day/day.model.js'
 import type { ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
 
-/**
- * A yes or no question you can ask of a day. "Did I drink" and "did I drink wine" are the same
- * kind of thing at different grain, so both are modelled once rather than one being a special
- * case of the other.
- */
-export type Aspect =
-  { kind: 'tag'; tagId: TagId } | { kind: 'option'; tagId: TagId; choiceId: ChoiceId }
-
 export function matches(aspect: Aspect, entry: DayEntry): boolean {
   const answers = entry.answers[aspect.tagId]
 
@@ -54,3 +46,11 @@ export function sameAspect(left: Aspect, right: Aspect): boolean {
 
   return left.kind === 'tag' || left.choiceId === (right as { choiceId: ChoiceId }).choiceId
 }
+
+/**
+ * A yes or no question you can ask of a day. "Did I drink" and "did I drink wine" are the same
+ * kind of thing at different grain, so both are modelled once rather than one being a special
+ * case of the other.
+ */
+export type Aspect =
+  { kind: 'tag'; tagId: TagId } | { kind: 'option'; tagId: TagId; choiceId: ChoiceId }
