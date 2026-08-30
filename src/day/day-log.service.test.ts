@@ -21,8 +21,8 @@ beforeEach(() => {
 })
 
 describe('load', () => {
-  test('should return an empty log when nothing is stored', () => {
-    expect(service.load()).toEqual(emptyDayLog())
+  test('should report empty when nothing is stored', () => {
+    expect(service.load()).toEqual({ status: 'empty' })
   })
 
   test('should return what was saved', () => {
@@ -30,27 +30,28 @@ describe('load', () => {
 
     service.save(log)
 
-    expect(service.load()).toEqual(log)
+    expect(service.load()).toEqual({ status: 'ok', value: log })
   })
 
-  test('should fall back when the stored shape is wrong', () => {
+  test('should report unreadable rather than discard a broken shape', () => {
     localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 1, days: [] }))
 
-    expect(service.load()).toEqual(emptyDayLog())
+    expect(service.load()).toMatchObject({ status: 'unreadable' })
   })
 
-  test('should report a stored shape it cannot read', () => {
-    localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 1, days: [] }))
+  test('should leave the stored text in place', () => {
+    const stored = JSON.stringify({ schemaVersion: 1, days: [] })
+    localStorage.setItem(storageKey, stored)
 
     service.load()
 
-    expect(logger.error).toHaveBeenCalledWith('Stored day log did not match the expected shape.')
+    expect(localStorage.getItem(storageKey)).toBe(stored)
   })
 
-  test('should fall back when the version is not the current one', () => {
+  test('should report unreadable for another version', () => {
     localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 99, days: {} }))
 
-    expect(service.load()).toEqual(emptyDayLog())
+    expect(service.load()).toMatchObject({ status: 'unreadable' })
   })
 })
 

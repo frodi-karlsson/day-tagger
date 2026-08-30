@@ -17,48 +17,58 @@ beforeEach(() => {
 })
 
 describe('load', () => {
-  test('should return an empty config when nothing is stored', () => {
-    expect(service.load()).toEqual(emptyTagConfig())
+  test('should report empty when nothing is stored', () => {
+    expect(service.load()).toEqual({ status: 'empty' })
   })
 
   test('should return what was saved', () => {
     service.save(config([tag()]))
 
-    expect(service.load()).toEqual(config([tag()]))
+    expect(service.load()).toEqual({ status: 'ok', value: config([tag()]) })
   })
 
-  test('should fall back when the stored shape is wrong', () => {
-    localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 1, tags: 'nope' }))
+  test('should report unreadable rather than discard a broken shape', () => {
+    localStorage.setItem(storageKey, '{"schemaVersion":1,"tags":"nope"}')
 
-    expect(service.load()).toEqual(emptyTagConfig())
+    expect(service.load()).toMatchObject({ status: 'unreadable' })
   })
 
-  test('should report a stored shape it cannot read', () => {
-    localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 1, tags: 'nope' }))
+  test('should hand back the raw text it could not read', () => {
+    localStorage.setItem(storageKey, '{"schemaVersion":1,"tags":"nope"}')
+
+    const result = service.load()
+
+    expect(result.status === 'unreadable' && result.raw).toBe('{"schemaVersion":1,"tags":"nope"}')
+  })
+
+  test('should leave the stored text in place', () => {
+    localStorage.setItem(storageKey, '{"schemaVersion":1,"tags":"nope"}')
 
     service.load()
 
-    expect(logger.error).toHaveBeenCalledWith('Stored tag config did not match the expected shape.')
+    expect(localStorage.getItem(storageKey)).toBe('{"schemaVersion":1,"tags":"nope"}')
   })
 
-  test('should fall back when the version is not the current one', () => {
-    localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 99, tags: [] }))
-
-    expect(service.load()).toEqual(emptyTagConfig())
-  })
-
-  test('should report a version it cannot read', () => {
-    localStorage.setItem(storageKey, JSON.stringify({ schemaVersion: 99, tags: [] }))
-
-    service.load()
-
-    expect(logger.error).toHaveBeenCalledWith('Stored tag config is version 99.')
-  })
-
-  test('should treat unparseable json as nothing stored', () => {
+  test('should report unreadable for json it cannot parse', () => {
     localStorage.setItem(storageKey, '{')
 
-    expect(service.load()).toEqual(emptyTagConfig())
+    expect(service.load()).toMatchObject({ status: 'unreadable', reason: 'it is not valid JSON' })
+  })
+
+  test('should report unreadable for another version', () => {
+    localStorage.setItem(storageKey, '{"schemaVersion":99,"tags":[]}')
+
+    expect(service.load()).toMatchObject({ status: 'unreadable', reason: 'it is version 99' })
+  })
+
+  test('should report what it could not read', () => {
+    localStorage.setItem(storageKey, '{')
+
+    service.load()
+
+    expect(logger.error).toHaveBeenCalledWith(
+      'Stored tag configuration was left alone because it is not valid JSON.',
+    )
   })
 })
 
@@ -66,7 +76,7 @@ describe('save', () => {
   test('should stamp the current schema version', () => {
     service.save({ schemaVersion: 99, tags: [] })
 
-    expect(service.load()).toEqual(emptyTagConfig())
+    expect(service.load()).toEqual({ status: 'ok', value: emptyTagConfig() })
   })
 
   test('should replace what was there before', () => {
@@ -74,7 +84,7 @@ describe('save', () => {
 
     service.save(config([]))
 
-    expect(service.load().tags).toEqual([])
+    expect(service.load()).toEqual({ status: 'ok', value: emptyTagConfig() })
   })
 })
 

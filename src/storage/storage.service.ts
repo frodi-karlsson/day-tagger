@@ -8,6 +8,11 @@ export class StorageService {
     this.storage = storage
   }
 
+  /** The stored text, untouched. Use this when a parse failure needs to be distinguished. */
+  readRaw(key: string): string | null {
+    return this.storage.getItem(key)
+  }
+
   read(key: string): unknown {
     const raw = this.storage.getItem(key)
     if (raw === null) {
