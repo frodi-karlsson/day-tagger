@@ -2,11 +2,8 @@ import { inject, registerDI } from '#src/di/di.js'
 import { ErrorService } from '#src/error/error.service.js'
 import type { LoadResult } from '#src/storage/load-result.js'
 import { StorageService } from '#src/storage/storage.service.js'
-import { setAnswers } from '#src/day/day-answers.js'
 import { isDayLog } from '#src/day/day.guard.js'
-import type { DayEntry, DayLog } from '#src/day/day.model.js'
-import type { IsoDate } from '#src/date/iso-date.js'
-import type { ChoiceId, TagId } from '#src/tag/tag.model.js'
+import type { DayLog } from '#src/day/day.model.js'
 
 const storageKey = 'day-tagger.day-log'
 const schemaVersion = 1
@@ -52,17 +49,6 @@ export class DayLogService {
 
   save(value: DayLog): void {
     this.storage.write(storageKey, { ...value, schemaVersion })
-  }
-
-  readDay(log: DayLog, date: IsoDate): DayEntry {
-    return log.days[date] ?? { date, answers: {} }
-  }
-
-  /** Returns a new log with the tag's answers set. An undefined value removes the tag. */
-  writeAnswers(log: DayLog, date: IsoDate, tagId: TagId, answers: ChoiceId[] | undefined): DayLog {
-    const entry = setAnswers(this.readDay(log, date), tagId, answers)
-
-    return { ...log, days: { ...log.days, [date]: entry } }
   }
 
   private unreadable(raw: string, reason: string): LoadResult<DayLog> {
