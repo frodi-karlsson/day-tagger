@@ -2,6 +2,7 @@ import styles from './App.module.scss'
 import { RecoveryNotice } from '#src/app/RecoveryNotice.js'
 import { Button } from '#src/button/Button.js'
 import { CalendarView } from '#src/calendar/CalendarView.js'
+import { ConfirmDialog } from '#src/dialog/ConfirmDialog.js'
 import { shiftMonth } from '#src/calendar/calendar.js'
 import { toIsoDate, type IsoDate } from '#src/date/iso-date.js'
 import { DayTagMenu } from '#src/day/DayTagMenu.js'
@@ -9,7 +10,8 @@ import { DayLogService } from '#src/day/day-log.service.js'
 import { readDay, writeDay } from '#src/day/day-log.js'
 import type { DayEntry } from '#src/day/day.model.js'
 import { inject } from '#src/di/di.js'
-import { registerServiceWorker } from '#src/pwa/service-worker.js'
+import { requestPersistentStorage } from '#src/pwa/persistent-storage.js'
+import { applyUpdate, registerServiceWorker } from '#src/pwa/service-worker.js'
 import { Store } from '#src/store/store.js'
 import { TagConfigMenu } from '#src/tag/TagConfigMenu.js'
 import { TagConfigService } from '#src/tag/tag-config.service.js'
@@ -20,9 +22,14 @@ import { createSignal, onMount, Show, type JSX } from 'solid-js'
 export function App(): JSX.Element {
   const store = inject(Store)
   const [unreadable, setUnreadable] = createSignal<Unreadable | undefined>()
+  const [updateReady, setUpdateReady] = createSignal(false)
 
   onMount(() => {
-    registerServiceWorker()
+    registerServiceWorker(() => {
+      setUpdateReady(true)
+    })
+
+    void requestPersistentStorage()
 
     const tags = inject(TagConfigService).load()
     const days = inject(DayLogService).load()
@@ -128,6 +135,21 @@ export function App(): JSX.Element {
             onSave={saveTags}
             onClose={() => {
               store.set('openMenu', undefined)
+            }}
+          />
+
+          {/* A dialog rather than a bar, because a bar would sit under whichever menu is open:
+              modal dialogs live in the browser's top layer, above all page content. */}
+          <ConfirmDialog
+            open={updateReady()}
+            title="A new version is ready"
+            message="Reload to pick it up."
+            detail="Anything you have saved stays where it is."
+            confirmLabel="Reload"
+            countdownSeconds={0}
+            onConfirm={applyUpdate}
+            onCancel={() => {
+              setUpdateReady(false)
             }}
           />
         </main>
