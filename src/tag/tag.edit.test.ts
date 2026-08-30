@@ -45,6 +45,37 @@ describe('addTag', () => {
     expect(next.tags.map((tag) => tag.label)).toEqual(['One', 'Two'])
   })
 
+  test('should restore a deleted tag with the same name', () => {
+    const config = deleteTag(addTag(empty(), 'Coffee'), 'coffee')
+
+    const next = addTag(config, 'Coffee')
+
+    expect(next.tags).toHaveLength(1)
+    expect(next.tags.at(0)?.active).toBe(true)
+  })
+
+  test('should keep a restored tag on its original id', () => {
+    const config = deleteTag(addTag(empty(), 'Coffee'), 'coffee')
+
+    const next = addTag(config, 'Coffee')
+
+    expect(next.tags.at(0)?.id).toBe('coffee')
+  })
+
+  test('should take the label as retyped when restoring', () => {
+    const config = deleteTag(addTag(empty(), 'Coffee'), 'coffee')
+
+    const next = addTag(config, 'COFFEE')
+
+    expect(next.tags.at(0)?.label).toBe('COFFEE')
+  })
+
+  test('should still suffix when the clash is with a live tag', () => {
+    const next = addTag(addTag(empty(), 'Coffee'), 'Coffee')
+
+    expect(next.tags.map((tag) => tag.id)).toEqual(['coffee', 'coffee-2'])
+  })
+
   test('should not mutate the config it is given', () => {
     const config = empty()
 
@@ -106,6 +137,15 @@ describe('addChoice', () => {
     expect(next.choices).toMatchObject({ minAnswers: 1, maxAnswers: 3 })
   })
 
+  test('should restore a deleted option with the same name', () => {
+    const tag = deleteOption(addChoice(plainTag(), 'Wine'), 'wine')
+
+    const next = addChoice(tag, 'Wine')
+
+    expect(next.choices?.options).toHaveLength(1)
+    expect(next.choices?.options.at(0)?.active).toBe(true)
+  })
+
   test('should avoid an option id already taken', () => {
     const next = addChoice(addChoice(plainTag(), 'Wine'), 'Wine')
 
@@ -139,6 +179,14 @@ describe('updateChoice', () => {
 
 function empty(): TagConfig {
   return { schemaVersion: 1, tags: [] }
+}
+
+function deleteTag(config: TagConfig, id: string): TagConfig {
+  return updateTag(config, id as TagId, (tag) => ({ ...tag, active: false }))
+}
+
+function deleteOption(tag: Tag, id: string): Tag {
+  return updateChoice(tag, id as ChoiceId, (choice) => ({ ...choice, active: false }))
 }
 
 function plainTag(): Tag {

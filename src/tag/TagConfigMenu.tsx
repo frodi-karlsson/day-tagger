@@ -1,7 +1,6 @@
 import styles from './TagConfigMenu.module.scss'
 import { Button } from '#src/button/Button.js'
 import { Dialog } from '#src/dialog/Dialog.js'
-import { classNames } from '#src/string/class-names.js'
 import { TagEditor } from '#src/tag/TagEditor.js'
 import { addTag, updateTag } from '#src/tag/tag.edit.js'
 import type { Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
@@ -45,8 +44,16 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
     setEditing(next.tags.at(-1)?.id)
   }
 
+  function liveTags(): Tag[] {
+    return props.config.tags.filter((tag) => tag.active)
+  }
+
   function replace(tag: Tag): void {
     props.onChange(updateTag(props.config, tag.id, () => tag))
+
+    if (!tag.active) {
+      setEditing(undefined)
+    }
   }
 
   function back(): void {
@@ -86,9 +93,9 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
           fallback={<p class={styles.empty}>No tags yet.</p>}
         >
           <ul class={styles.list}>
-            <For each={props.config.tags}>
+            <For each={liveTags()}>
               {(tag) => (
-                <li class={classNames(styles.item, !tag.active && styles.retired)}>
+                <li class={styles.item}>
                   <span class={styles.swatch} style={{ 'background-color': swatch(tag.hue) }} />
                   <span class={styles.name}>{tag.label}</span>
 

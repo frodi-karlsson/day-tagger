@@ -2,7 +2,7 @@ import styles from './TagEditor.module.scss'
 import { Button } from '#src/button/Button.js'
 import { classNames } from '#src/string/class-names.js'
 import { addChoice, updateChoice } from '#src/tag/tag.edit.js'
-import type { Choice, ChoiceId, Tag } from '#src/tag/tag.model.js'
+import type { ChoiceId, Tag } from '#src/tag/tag.model.js'
 import { validateTag } from '#src/tag/tag.validation.js'
 import { createSignal, For, Show, type JSX } from 'solid-js'
 
@@ -34,7 +34,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
   }
 
   return (
-    <section class={classNames(styles.editor, !props.tag.active && styles.retired)}>
+    <section class={styles.editor}>
       <div class={styles.row}>
         <span class={styles.swatch} style={{ 'background-color': swatch(props.tag.hue) }} />
 
@@ -52,10 +52,10 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
           size="sm"
           class={styles.action}
           onClick={() => {
-            change({ ...props.tag, active: !props.tag.active })
+            change({ ...props.tag, active: false })
           }}
         >
-          {props.tag.active ? 'Retire' : 'Restore'}
+          Delete
         </Button>
       </div>
 
@@ -76,7 +76,7 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
       </div>
 
       <div class={styles.options}>
-        <For each={props.tag.choices?.options ?? []}>
+        <For each={props.tag.choices?.options.filter((option) => option.active) ?? []}>
           {(option) => (
             <div class={styles.row}>
               <input
@@ -93,10 +93,10 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
                 size="sm"
                 class={styles.action}
                 onClick={() => {
-                  change(toggleOption(props.tag, option.id, option))
+                  change(deleteOption(props.tag, option.id))
                 }}
               >
-                {option.active ? 'Retire' : 'Restore'}
+                Delete
               </Button>
             </div>
           )}
@@ -160,8 +160,8 @@ function renameOption(tag: Tag, choiceId: ChoiceId, label: string): Tag {
   return updateChoice(tag, choiceId, (choice) => ({ ...choice, label }))
 }
 
-function toggleOption(tag: Tag, choiceId: ChoiceId, option: Choice): Tag {
-  return updateChoice(tag, choiceId, (choice) => ({ ...choice, active: !option.active }))
+function deleteOption(tag: Tag, choiceId: ChoiceId): Tag {
+  return updateChoice(tag, choiceId, (choice) => ({ ...choice, active: false }))
 }
 
 function swatch(hue: number): string {

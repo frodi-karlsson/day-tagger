@@ -1,9 +1,20 @@
+import { slugify } from '#src/string/slugify.js'
 import { nextHue } from '#src/tag/tag.color.js'
 import { allocateChoiceId, allocateTagId } from '#src/tag/tag.id.js'
 import type { Choice, ChoiceId, Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
 
-/** Adds a tag with an id nothing else uses and a hue far from the ones already taken. */
+/**
+ * Adds a tag with an id nothing else uses and a hue far from the ones already taken. Naming it
+ * the same as a deleted tag brings that one back instead, so its history reattaches rather
+ * than being stranded behind a second id.
+ */
 export function addTag(config: TagConfig, label: string): TagConfig {
+  const deleted = config.tags.find((tag) => tag.id === slugify(label) && !tag.active)
+
+  if (deleted !== undefined) {
+    return updateTag(config, deleted.id, (tag) => ({ ...tag, label, active: true }))
+  }
+
   const id = allocateTagId(
     label,
     config.tags.map((tag) => tag.id),
@@ -18,9 +29,15 @@ export function updateTag(config: TagConfig, tagId: TagId, update: (tag: Tag) =>
   return { ...config, tags: config.tags.map((tag) => (tag.id === tagId ? update(tag) : tag)) }
 }
 
-/** Adds an option, creating the choice set when this is the tag's first one. */
+/** Adds an option, creating the choice set when this is the tag's first one. A name matching
+ * a deleted option restores it, on the same reasoning as addTag. */
 export function addChoice(tag: Tag, label: string): Tag {
   const options = tag.choices?.options ?? []
+  const deleted = options.find((option) => option.id === slugify(label) && !option.active)
+
+  if (deleted !== undefined) {
+    return updateChoice(tag, deleted.id, (option) => ({ ...option, label, active: true }))
+  }
 
   const choice: Choice = {
     id: allocateChoiceId(
