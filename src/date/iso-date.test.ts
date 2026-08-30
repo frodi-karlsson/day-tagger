@@ -1,4 +1,11 @@
-import { fromIsoDate, isIsoDate, parseIsoDate, toIsoDate } from '#src/date/iso-date.js'
+import {
+  addDays,
+  daysBetween,
+  fromIsoDate,
+  isIsoDate,
+  parseIsoDate,
+  toIsoDate,
+} from '#src/date/iso-date.js'
 import { describe, expect, test } from 'vitest'
 
 describe('toIsoDate', () => {
@@ -72,5 +79,57 @@ describe('parseIsoDate', () => {
 
   test('should throw when it is not', () => {
     expect(() => parseIsoDate('nope')).toThrow('not a calendar date')
+  })
+})
+
+describe('addDays', () => {
+  test('should move forward within a month', () => {
+    expect(addDays(parseIsoDate('2026-08-30'), 1)).toBe('2026-08-31')
+  })
+
+  test('should roll into the next month', () => {
+    expect(addDays(parseIsoDate('2026-08-31'), 1)).toBe('2026-09-01')
+  })
+
+  test('should roll into the next year', () => {
+    expect(addDays(parseIsoDate('2026-12-31'), 1)).toBe('2027-01-01')
+  })
+
+  test('should move backward', () => {
+    expect(addDays(parseIsoDate('2026-09-01'), -1)).toBe('2026-08-31')
+  })
+
+  test('should cross a leap day', () => {
+    expect(addDays(parseIsoDate('2024-02-28'), 1)).toBe('2024-02-29')
+  })
+
+  test('should skip the leap day outside a leap year', () => {
+    expect(addDays(parseIsoDate('2026-02-28'), 1)).toBe('2026-03-01')
+  })
+
+  test('should stay put for zero', () => {
+    expect(addDays(parseIsoDate('2026-08-30'), 0)).toBe('2026-08-30')
+  })
+})
+
+describe('daysBetween', () => {
+  test('should count a single day', () => {
+    expect(daysBetween(parseIsoDate('2026-08-30'), parseIsoDate('2026-08-31'))).toBe(1)
+  })
+
+  test('should return zero for the same day', () => {
+    expect(daysBetween(parseIsoDate('2026-08-30'), parseIsoDate('2026-08-30'))).toBe(0)
+  })
+
+  test('should go negative when the second is earlier', () => {
+    expect(daysBetween(parseIsoDate('2026-08-31'), parseIsoDate('2026-08-30'))).toBe(-1)
+  })
+
+  test('should count across a month boundary', () => {
+    expect(daysBetween(parseIsoDate('2026-08-30'), parseIsoDate('2026-09-02'))).toBe(3)
+  })
+
+  test('should survive a daylight saving change', () => {
+    expect(daysBetween(parseIsoDate('2026-03-28'), parseIsoDate('2026-03-30'))).toBe(2)
   })
 })

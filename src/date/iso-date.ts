@@ -31,6 +31,24 @@ export function fromIsoDate(value: IsoDate): Date {
   return new Date(`${value}T00:00:00`)
 }
 
+/** Moves by whole days, rolling months and years over. */
+export function addDays(value: IsoDate, days: number): IsoDate {
+  const date = fromIsoDate(value)
+
+  date.setDate(date.getDate() + days)
+
+  return toIsoDate(date)
+}
+
+/** How many whole days separate two calendar dates. Negative when `to` is earlier. */
+export function daysBetween(from: IsoDate, to: IsoDate): number {
+  const start = fromIsoDate(from)
+  const end = fromIsoDate(to)
+  const dayMs = 24 * 60 * 60 * 1000
+
+  return Math.round((end.getTime() - start.getTime()) / dayMs)
+}
+
 export function parseIsoDate(value: string): IsoDate {
   assert(isIsoDate(value), `"${value}" is not a calendar date in YYYY-MM-DD form.`)
 
