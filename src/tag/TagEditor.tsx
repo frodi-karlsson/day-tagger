@@ -3,9 +3,9 @@ import { Button } from '#src/button/Button.js'
 import { swatchColor } from '#src/tag/tag-swatch.js'
 import { classNames } from '#src/string/class-names.js'
 import { addChoice, updateChoice } from '#src/tag/tag.edit.js'
-import type { ChoiceId, Tag } from '#src/tag/tag.model.js'
+import type { Choice, ChoiceId, Tag } from '#src/tag/tag.model.js'
 import { validateTag } from '#src/tag/tag.validation.js'
-import { createSignal, For, Show, type JSX } from 'solid-js'
+import { createSignal, For, Index, Show, type JSX } from 'solid-js'
 
 /** Edits one tag in place. Every change emits a whole replacement tag. */
 export function TagEditor(props: TagEditorProps): JSX.Element {
@@ -24,6 +24,10 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
 
     change(addChoice(props.tag, label))
     setOptionLabel('')
+  }
+
+  function activeOptions(): Choice[] {
+    return props.tag.choices?.options.filter((option) => option.active) ?? []
   }
 
   function setBound(bound: 'minAnswers' | 'maxAnswers', value: number): void {
@@ -77,15 +81,17 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
       </div>
 
       <div class={styles.options}>
-        <For each={props.tag.choices?.options.filter((option) => option.active) ?? []}>
+        {/* Index, not For. Renaming an option gives it a new identity, and For would rebuild
+            the row around it, taking the focused input with it. */}
+        <Index each={activeOptions()}>
           {(option) => (
             <div class={styles.row}>
               <input
                 class={styles.input}
                 aria-label="Option label"
-                value={option.label}
+                value={option().label}
                 onInput={(event) => {
-                  change(renameOption(props.tag, option.id, event.currentTarget.value))
+                  change(renameOption(props.tag, option().id, event.currentTarget.value))
                 }}
               />
 
@@ -94,14 +100,14 @@ export function TagEditor(props: TagEditorProps): JSX.Element {
                 size="sm"
                 class={styles.action}
                 onClick={() => {
-                  change(deleteOption(props.tag, option.id))
+                  change(deleteOption(props.tag, option().id))
                 }}
               >
                 Delete
               </Button>
             </div>
           )}
-        </For>
+        </Index>
 
         <div class={styles.row}>
           <input
