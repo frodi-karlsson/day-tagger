@@ -1,17 +1,3 @@
-terraform {
-  required_version = ">= 1.6.0"
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "cloudflare" {
-  api_token = var.cloudflare_token
-}
-
 # Deployments are pushed by CI with wrangler rather than built by Cloudflare, so there is no
 # source repository attached here. The project is only a place for those uploads to land.
 resource "cloudflare_pages_project" "day_tagger" {

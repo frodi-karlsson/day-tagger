@@ -1,6 +1,7 @@
-# Copy to tofu.tfvars and fill in. That file is ignored by git.
+# Copy to terraform.tfvars and fill in. That file is ignored by git, and tofu loads it on its
+# own, so no -var-file flag is needed.
 #
-#   cp tofu/tofu.tfvars.example tofu/tofu.tfvars
+#   cp tofu/terraform.tfvars.example tofu/terraform.tfvars
 
 # Create at https://dash.cloudflare.com/profile/api-tokens with these permissions:
 #   Account | Cloudflare Pages | Edit
