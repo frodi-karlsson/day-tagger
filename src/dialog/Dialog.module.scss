@@ -40,6 +40,7 @@
   overflow-y: auto;
 }
 
+/* Always rendered, because gating JSX passed through a prop reorders hydration keys. */
 .footer {
   display: flex;
   justify-content: flex-end;
@@ -47,4 +48,8 @@
   padding: var(--space-4);
   border-top: 1px solid var(--color-border);
   flex: none;
+}
+
+.footer:empty {
+  display: none;
 }

@@ -58,9 +58,7 @@ export function Dialog(props: DialogProps): JSX.Element {
 
       <div class={styles.body}>{props.children}</div>
 
-      <Show when={props.footer !== undefined}>
-        <div class={styles.footer}>{props.footer}</div>
-      </Show>
+      <div class={styles.footer}>{props.footer}</div>
     </dialog>
   )
 }
