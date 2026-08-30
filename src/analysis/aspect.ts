@@ -39,6 +39,11 @@ export function describeAspect(aspect: Aspect, tags: Tag[]): string {
   return `${tag.label}: ${option?.label ?? aspect.choiceId}`
 }
 
+/** A stable string for an aspect, so it can round trip through a select element. */
+export function aspectKey(aspect: Aspect): string {
+  return aspect.kind === 'tag' ? `tag:${aspect.tagId}` : `option:${aspect.tagId}:${aspect.choiceId}`
+}
+
 export function sameAspect(left: Aspect, right: Aspect): boolean {
   if (left.tagId !== right.tagId || left.kind !== right.kind) {
     return false

@@ -1,4 +1,5 @@
 import styles from './App.module.scss'
+import { loadPersistedState, type Unreadable } from '#src/app/load-state.js'
 import { RecoveryNotice } from '#src/app/RecoveryNotice.js'
 import { Button } from '#src/button/Button.js'
 import { CalendarView } from '#src/calendar/CalendarView.js'
@@ -31,27 +32,12 @@ export function App(): JSX.Element {
 
     void requestPersistentStorage()
 
-    const tags = inject(TagConfigService).load()
-    const days = inject(DayLogService).load()
+    const problem = loadPersistedState(store)
 
-    if (tags.status === 'unreadable') {
-      setUnreadable({ what: 'tag configuration', reason: tags.reason, raw: tags.raw })
-
-      return
-    }
-
-    if (days.status === 'unreadable') {
-      setUnreadable({ what: 'day log', reason: days.reason, raw: days.raw })
+    if (problem !== undefined) {
+      setUnreadable(problem)
 
       return
-    }
-
-    if (tags.status === 'ok') {
-      store.set('tagConfig', tags.value)
-    }
-
-    if (days.status === 'ok') {
-      store.set('dayLog', days.value)
     }
 
     store.set('openMenu', 'day')
@@ -95,15 +81,21 @@ export function App(): JSX.Element {
           <div class={styles.bar}>
             <h1 class={styles.title}>Day Tagger</h1>
 
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                store.set('openMenu', 'tags')
-              }}
-            >
-              Tags
-            </Button>
+            <div class={styles.actions}>
+              <a class={styles.link} href="/analysis">
+                Analysis
+              </a>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  store.set('openMenu', 'tags')
+                }}
+              >
+                Tags
+              </Button>
+            </div>
           </div>
 
           <CalendarView
@@ -165,10 +157,4 @@ export function App(): JSX.Element {
       )}
     </Show>
   )
-}
-
-interface Unreadable {
-  what: string
-  reason: string
-  raw: string
 }
