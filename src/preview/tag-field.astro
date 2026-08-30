@@ -44,6 +44,10 @@ const single: Tag = {
     <TagFieldPreview tag={multi} initialAnswers={[wine.id, liquor.id]} client:load />
   </PreviewVariant>
 
+  <PreviewVariant description="Applied but short of the minimum">
+    <TagFieldPreview tag={single} initialAnswers={[]} client:load />
+  </PreviewVariant>
+
   <PreviewVariant description="Single answer, selecting replaces">
     <TagFieldPreview tag={single} initialAnswers={[liquor.id]} client:load />
   </PreviewVariant>
