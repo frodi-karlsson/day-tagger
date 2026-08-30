@@ -1,0 +1,82 @@
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-3);
+}
+
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+}
+
+.weekday {
+  padding-block: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+  text-align: center;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  min-height: 3rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-2);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-2);
+  cursor: pointer;
+}
+
+.cell:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.outside {
+  color: var(--color-text-muted);
+  background-color: transparent;
+}
+
+.today {
+  border-color: var(--color-accent);
+  font-weight: var(--font-weight-3);
+}
+
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  min-height: 0.5rem;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.overflow {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+  line-height: 1;
+}

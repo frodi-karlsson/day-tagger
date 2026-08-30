@@ -1,0 +1,52 @@
+---
+import { CalendarViewPreview } from '#src/preview/CalendarViewPreview.js'
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import PreviewVariant from '#src/preview/PreviewVariant.astro'
+import type { IsoDate } from '#src/date/iso-date.js'
+import type { DayEntry } from '#src/day/day.model.js'
+import type { ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
+
+const today = '2026-08-12' as IsoDate
+const month = { year: 2026, month: 8 }
+
+const tags: Tag[] = [
+  { id: 'walked' as TagId, label: 'Walked', hue: 200, active: true },
+  { id: 'alcohol' as TagId, label: 'Alcohol', hue: 40, active: true },
+  { id: 'mood' as TagId, label: 'Mood', hue: 280, active: true },
+  { id: 'read' as TagId, label: 'Read', hue: 130, active: true },
+  { id: 'ran' as TagId, label: 'Ran', hue: 340, active: true },
+]
+
+function entry(date: string, ids: string[]): [string, DayEntry] {
+  const answers = Object.fromEntries(ids.map((id) => [id, []])) as Record<TagId, ChoiceId[]>
+
+  return [date, { date: date as IsoDate, answers }]
+}
+
+const days = Object.fromEntries([
+  entry('2026-08-03', ['walked']),
+  entry('2026-08-05', ['walked', 'mood']),
+  entry('2026-08-12', ['alcohol', 'mood', 'read']),
+  entry('2026-08-18', ['walked', 'alcohol', 'mood', 'read']),
+  entry('2026-08-21', ['walked', 'alcohol', 'mood', 'read', 'ran']),
+  entry('2026-08-29', ['ran']),
+]) as Record<IsoDate, DayEntry>
+
+const emptyDays: Record<IsoDate, DayEntry> = {}
+---
+
+<PreviewPage title="Calendar">
+  <PreviewVariant description="A month with tagged days">
+    <CalendarViewPreview initialMonth={month} tags={tags} days={days} today={today} client:load />
+  </PreviewVariant>
+
+  <PreviewVariant description="A month with nothing tagged">
+    <CalendarViewPreview
+      initialMonth={month}
+      tags={tags}
+      days={emptyDays}
+      today={today}
+      client:load
+    />
+  </PreviewVariant>
+</PreviewPage>
