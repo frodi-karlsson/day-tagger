@@ -1,4 +1,4 @@
-import { addChoice, addTag, updateChoice, updateTag } from '#src/tag/tag.edit.js'
+import { addChoice, addTag, moveTag, updateChoice, updateTag } from '#src/tag/tag.edit.js'
 import type { ChoiceId, Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
 import { describe, expect, test } from 'vitest'
 
@@ -191,4 +191,58 @@ function deleteOption(tag: Tag, id: string): Tag {
 
 function plainTag(): Tag {
   return { id: 'alcohol' as TagId, label: 'Alcohol', hue: 40, active: true }
+}
+
+describe('moveTag', () => {
+  test('should swap a tag with the one above it', () => {
+    const config = threeTags()
+
+    expect(labelsOf(moveTag(config, 'two' as TagId, -1))).toEqual(['Two', 'One', 'Three'])
+  })
+
+  test('should swap a tag with the one below it', () => {
+    const config = threeTags()
+
+    expect(labelsOf(moveTag(config, 'two' as TagId, 1))).toEqual(['One', 'Three', 'Two'])
+  })
+
+  test('should do nothing at the top', () => {
+    const config = threeTags()
+
+    expect(labelsOf(moveTag(config, 'one' as TagId, -1))).toEqual(['One', 'Two', 'Three'])
+  })
+
+  test('should do nothing at the bottom', () => {
+    const config = threeTags()
+
+    expect(labelsOf(moveTag(config, 'three' as TagId, 1))).toEqual(['One', 'Two', 'Three'])
+  })
+
+  test('should skip over a deleted tag', () => {
+    const config = updateTag(threeTags(), 'two' as TagId, (tag) => ({ ...tag, active: false }))
+
+    expect(labelsOf(moveTag(config, 'three' as TagId, -1))).toEqual(['Three', 'Two', 'One'])
+  })
+
+  test('should do nothing when the tag is unknown', () => {
+    const config = threeTags()
+
+    expect(labelsOf(moveTag(config, 'missing' as TagId, 1))).toEqual(['One', 'Two', 'Three'])
+  })
+
+  test('should not mutate the config it is given', () => {
+    const config = threeTags()
+
+    moveTag(config, 'one' as TagId, 1)
+
+    expect(labelsOf(config)).toEqual(['One', 'Two', 'Three'])
+  })
+})
+
+function threeTags(): TagConfig {
+  return addTag(addTag(addTag(empty(), 'One'), 'Two'), 'Three')
+}
+
+function labelsOf(config: TagConfig): string[] {
+  return config.tags.map((tag) => tag.label)
 }

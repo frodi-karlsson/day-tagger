@@ -73,3 +73,40 @@ export function updateChoice(
 
   return { ...tag, choices: { ...tag.choices, options } }
 }
+
+/**
+ * Swaps a tag with its nearest visible neighbour. Deleted tags are skipped rather than swapped
+ * into, so moving matches what the list actually shows.
+ */
+export function moveTag(config: TagConfig, tagId: TagId, direction: -1 | 1): TagConfig {
+  const from = config.tags.findIndex((tag) => tag.id === tagId)
+
+  if (from === -1) {
+    return config
+  }
+
+  const to = nextVisible(config.tags, from, direction)
+  const moved = config.tags[from]
+  const displaced = to === undefined ? undefined : config.tags[to]
+
+  if (to === undefined || moved === undefined || displaced === undefined) {
+    return config
+  }
+
+  const tags = [...config.tags]
+
+  tags[from] = displaced
+  tags[to] = moved
+
+  return { ...config, tags }
+}
+
+function nextVisible(tags: Tag[], from: number, direction: -1 | 1): number | undefined {
+  for (let index = from + direction; index >= 0 && index < tags.length; index += direction) {
+    if (tags[index]?.active === true) {
+      return index
+    }
+  }
+
+  return undefined
+}

@@ -5,7 +5,7 @@ import { daysAffectedBy } from '#src/day/day-impact.js'
 import { ConfirmDialog } from '#src/dialog/ConfirmDialog.js'
 import { Dialog } from '#src/dialog/Dialog.js'
 import { TagEditor } from '#src/tag/TagEditor.js'
-import { addTag, updateTag } from '#src/tag/tag.edit.js'
+import { addTag, moveTag, updateTag } from '#src/tag/tag.edit.js'
 import { validateTag } from '#src/tag/tag.validation.js'
 import type { IsoDate } from '#src/date/iso-date.js'
 import type { Tag, TagConfig, TagId } from '#src/tag/tag.model.js'
@@ -71,6 +71,10 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
     if (!tag.active) {
       setEditing(undefined)
     }
+  }
+
+  function move(tagId: TagId, direction: -1 | 1): void {
+    setDraft((current) => moveTag(current, tagId, direction))
   }
 
   function isValid(): boolean {
@@ -140,10 +144,34 @@ export function TagConfigMenu(props: TagConfigMenuProps): JSX.Element {
           >
             <ul class={styles.list}>
               <For each={liveTags()}>
-                {(tag) => (
+                {(tag, index) => (
                   <li class={styles.item}>
                     <span class={styles.swatch} style={{ 'background-color': swatch(tag.hue) }} />
                     <span class={styles.name}>{tag.label}</span>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={`Move ${tag.label} up`}
+                      disabled={index() === 0}
+                      onClick={() => {
+                        move(tag.id, -1)
+                      }}
+                    >
+                      ↑
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={`Move ${tag.label} down`}
+                      disabled={index() === liveTags().length - 1}
+                      onClick={() => {
+                        move(tag.id, 1)
+                      }}
+                    >
+                      ↓
+                    </Button>
 
                     <Button
                       variant="secondary"
