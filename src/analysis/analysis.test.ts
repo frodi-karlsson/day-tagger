@@ -5,9 +5,16 @@ import {
   sameAspect,
   type Aspect,
 } from '#src/analysis/aspect.js'
-import { associate, ratioOf } from '#src/analysis/association.js'
+import {
+  associate,
+  ratioOf,
+  type Association,
+  type AssociationSide,
+} from '#src/analysis/association.js'
 import { frequencyOf, frequencyWithinTag } from '#src/analysis/frequency.js'
+import { percent } from '#src/analysis/percent.js'
 import { buildSeries, type Observation } from '#src/analysis/series.js'
+import { sightingsCaveat, verdictOf, verdictSentence, type Verdict } from '#src/analysis/verdict.js'
 import type { IsoDate } from '#src/date/iso-date.js'
 import type { DayEntry, DayLog } from '#src/day/day.model.js'
 import type { Choice, ChoiceId, Tag, TagId } from '#src/tag/tag.model.js'
@@ -211,8 +218,140 @@ describe('ratioOf', () => {
   })
 })
 
+describe('verdictOf', () => {
+  test('should still make a claim when the cause is rare', () => {
+    const result = verdictOf(pairing({ total: 4, withEffect: 3 }, { total: 40, withEffect: 10 }))
+
+    expect(result).toEqual({ kind: 'ratio', direction: 'more', times: 3 })
+  })
+
+  test('should call a small gap flat', () => {
+    const result = verdictOf(pairing({ total: 20, withEffect: 10 }, { total: 20, withEffect: 9 }))
+
+    expect(result.kind).toBe('flat')
+  })
+
+  test('should report the exact multiplier when the effect is likelier', () => {
+    const result = verdictOf(pairing({ total: 20, withEffect: 10 }, { total: 20, withEffect: 5 }))
+
+    expect(result).toEqual({ kind: 'ratio', direction: 'more', times: 2 })
+  })
+
+  test('should invert the multiplier when the effect is rarer', () => {
+    const result = verdictOf(pairing({ total: 20, withEffect: 5 }, { total: 20, withEffect: 10 }))
+
+    expect(result).toEqual({ kind: 'ratio', direction: 'less', times: 2 })
+  })
+
+  test('should call it exclusive when the effect never happens otherwise', () => {
+    const result = verdictOf(pairing({ total: 20, withEffect: 5 }, { total: 20, withEffect: 0 }))
+
+    expect(result.kind).toBe('exclusive')
+  })
+
+  test('should call it absent when the effect never follows the cause', () => {
+    const result = verdictOf(pairing({ total: 20, withEffect: 0 }, { total: 20, withEffect: 10 }))
+
+    expect(result.kind).toBe('absent')
+  })
+
+  test('should have nothing to say when the cause never happened', () => {
+    const result = verdictOf(pairing({ total: 0, withEffect: 0 }, { total: 40, withEffect: 9 }))
+
+    expect(result).toEqual({ kind: 'none' })
+  })
+})
+
+describe('sightingsCaveat', () => {
+  test('should qualify a claim drawn from few days', () => {
+    const association = pairing({ total: 3, withEffect: 2 }, { total: 40, withEffect: 4 })
+
+    expect(sightingsCaveat(association, 'Fun')).toBe(
+      'Only 3 days with Fun so far, so this can still swing a long way.',
+    )
+  })
+
+  test('should count a single day in the singular', () => {
+    const association = pairing({ total: 1, withEffect: 1 }, { total: 40, withEffect: 4 })
+
+    expect(sightingsCaveat(association, 'Fun')).toBe(
+      'Only 1 day with Fun so far, so this can still swing a long way.',
+    )
+  })
+
+  test('should say nothing once the evidence holds up', () => {
+    const association = pairing({ total: 5, withEffect: 3 }, { total: 40, withEffect: 4 })
+
+    expect(sightingsCaveat(association, 'Fun')).toBeUndefined()
+  })
+
+  test('should say nothing when the cause never happened, since the verdict covers it', () => {
+    const association = pairing({ total: 0, withEffect: 0 }, { total: 40, withEffect: 4 })
+
+    expect(sightingsCaveat(association, 'Fun')).toBeUndefined()
+  })
+})
+
+describe('verdictSentence', () => {
+  test('should state a multiplier without a trailing zero', () => {
+    const verdict: Verdict = { kind: 'ratio', direction: 'more', times: 2 }
+
+    expect(verdictSentence(verdict, 'Alcohol', 'Bad stomach')).toBe(
+      'Bad stomach is 2× as likely after Alcohol.',
+    )
+  })
+
+  test('should round a multiplier to one decimal', () => {
+    const verdict: Verdict = { kind: 'ratio', direction: 'more', times: 1.8571 }
+
+    expect(verdictSentence(verdict, 'Alcohol', 'Bad stomach')).toBe(
+      'Bad stomach is 1.9× as likely after Alcohol.',
+    )
+  })
+
+  test('should say less likely in the other direction', () => {
+    const verdict: Verdict = { kind: 'ratio', direction: 'less', times: 3.2 }
+
+    expect(verdictSentence(verdict, 'Walked', 'Bad mood')).toBe(
+      'Bad mood is 3.2× less likely after Walked.',
+    )
+  })
+
+  test('should say there is nothing to compare when the cause never happened', () => {
+    expect(verdictSentence({ kind: 'none' }, 'Travel', 'Bad sleep')).toBe(
+      'Travel has not come up yet, so there is nothing to compare.',
+    )
+  })
+
+  test('should make no claim when the gap is flat', () => {
+    expect(verdictSentence({ kind: 'flat' }, 'Read', 'Slept well')).toBe(
+      'Slept well is about as likely either way.',
+    )
+  })
+})
+
+describe('percent', () => {
+  test('should render a ratio as a whole number', () => {
+    expect(percent(0.625)).toBe('63%')
+  })
+
+  test('should render zero', () => {
+    expect(percent(0)).toBe('0%')
+  })
+})
+
 function day(value: string): IsoDate {
   return value as IsoDate
+}
+
+function pairing(withCause: AssociationSide, withoutCause: AssociationSide): Association {
+  return {
+    windowDays: 0,
+    observedDays: withCause.total + withoutCause.total,
+    withCause,
+    withoutCause,
+    difference: ratioOf(withCause) - ratioOf(withoutCause),
+  }
 }
 
 function entry(answers: Record<string, string[]>): DayEntry {

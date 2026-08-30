@@ -6,9 +6,17 @@ import {
   sameAspect,
   type Aspect,
 } from '#src/analysis/aspect.js'
-import { associate, ratioOf, type Association } from '#src/analysis/association.js'
+import {
+  associate,
+  ratioOf,
+  type Association,
+  type AssociationSide,
+} from '#src/analysis/association.js'
+import { Comparison } from '#src/analysis/Comparison.js'
 import { frequencyOf, frequencyWithinTag } from '#src/analysis/frequency.js'
+import { percent } from '#src/analysis/percent.js'
 import { buildSeries, type Observation } from '#src/analysis/series.js'
+import { windowChoiceList } from '#src/analysis/window.const.js'
 import { loadPersistedState, type Unreadable } from '#src/app/load-state.js'
 import { Button } from '#src/button/Button.js'
 import { RecoveryNotice } from '#src/app/RecoveryNotice.js'
@@ -194,21 +202,23 @@ export function AnalysisPage(): JSX.Element {
               </div>
 
               <div class={styles.control}>
-                <span class={styles.label}>within</span>
+                <span class={styles.label}>seen</span>
 
-                <input
-                  type="number"
-                  class={classNames(styles.field, styles.number)}
-                  aria-label="Days to look ahead"
-                  min="0"
-                  max="14"
-                  value={String(windowDays())}
+                <select
+                  class={styles.field}
+                  aria-label="How long to look ahead"
                   onInput={(event) => {
-                    setWindowDays(Math.max(Number(event.currentTarget.value), 0))
+                    setWindowDays(Number(event.currentTarget.value))
                   }}
-                />
-
-                <span class={styles.unit}>days</span>
+                >
+                  <For each={windowChoiceList}>
+                    {(choice) => (
+                      <option value={String(choice.days)} selected={choice.days === windowDays()}>
+                        {choice.label}
+                      </option>
+                    )}
+                  </For>
+                </select>
               </div>
             </div>
 
@@ -216,42 +226,12 @@ export function AnalysisPage(): JSX.Element {
 
             <Show when={pairing()}>
               {(association) => (
-                <>
-                  <p class={styles.headline}>
-                    {headline(association(), cause(), effect(), tags())}
-                  </p>
-
-                  <table class={styles.table}>
-                    <thead>
-                      <tr>
-                        <th />
-                        <th>{effectName()}</th>
-                        <th>not {effectName()}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th>{causeName()}</th>
-                        <td>{association().withCause.withEffect}</td>
-                        <td>
-                          {association().withCause.total - association().withCause.withEffect}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>not {causeName()}</th>
-                        <td>{association().withoutCause.withEffect}</td>
-                        <td>
-                          {association().withoutCause.total - association().withoutCause.withEffect}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <p class={styles.note}>
-                    Counted over {association().observedDays} days that could be seen through the
-                    whole window.
-                  </p>
-                </>
+                <Comparison
+                  association={association()}
+                  causeName={causeName()}
+                  effectName={effectName()}
+                  effectHue={hueOf(effect(), tags())}
+                />
               )}
             </Show>
 
@@ -299,8 +279,8 @@ export function AnalysisPage(): JSX.Element {
   )
 }
 
-function hueOf(aspect: Aspect, tags: Tag[]): number {
-  return tags.find((tag) => tag.id === aspect.tagId)?.hue ?? 0
+function hueOf(aspect: Aspect | undefined, tags: Tag[]): number {
+  return tags.find((tag) => tag.id === aspect?.tagId)?.hue ?? 0
 }
 
 function strength(association: Association): number {
@@ -332,32 +312,13 @@ function summarise(aspect: Aspect | undefined, series: Observation[], tags: Tag[
   return `${base} On the days that tag applied, ${percent(withinTag.ratio)}.`
 }
 
-function headline(
-  association: Association,
-  cause: Aspect | undefined,
-  effect: Aspect | undefined,
-  tags: Tag[],
-): string {
-  if (cause === undefined || effect === undefined) {
-    return ''
-  }
-
-  const after = percent(ratioOf(association.withCause))
-  const otherwise = percent(ratioOf(association.withoutCause))
-
-  return `After ${describeAspect(cause, tags)}, ${describeAspect(effect, tags)} ${after} of the time. Otherwise ${otherwise}.`
-}
-
+/** Both sides carry their own denominator, since the two are rarely the same size. */
 function explain(association: Association): string {
-  const after = percent(ratioOf(association.withCause))
-  const otherwise = percent(ratioOf(association.withoutCause))
-  const counts = `${String(association.withCause.withEffect)} of ${String(association.withCause.total)}`
-
-  return `${after} after, ${otherwise} otherwise (${counts} days)`
+  return `${side(association.withCause)} after, ${side(association.withoutCause)} otherwise`
 }
 
-function percent(ratio: number): string {
-  return `${String(Math.round(ratio * 100))}%`
+function side(value: AssociationSide): string {
+  return `${percent(ratioOf(value))} of ${String(value.total)}`
 }
 
 function signed(difference: number): string {

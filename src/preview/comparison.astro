@@ -1,0 +1,63 @@
+---
+import { Comparison } from '#src/analysis/Comparison.js'
+import PreviewPage from '#src/preview/PreviewPage.astro'
+import PreviewVariant from '#src/preview/PreviewVariant.astro'
+import type { Association, AssociationSide } from '#src/analysis/association.js'
+
+function ratio(side: AssociationSide): number {
+  return side.total === 0 ? 0 : side.withEffect / side.total
+}
+
+function association(withCause: AssociationSide, withoutCause: AssociationSide): Association {
+  return {
+    windowDays: 1,
+    observedDays: withCause.total + withoutCause.total,
+    withCause,
+    withoutCause,
+    difference: ratio(withCause) - ratio(withoutCause),
+  }
+}
+
+const stronger = association({ total: 21, withEffect: 13 }, { total: 64, withEffect: 12 })
+const weaker = association({ total: 18, withEffect: 2 }, { total: 70, withEffect: 31 })
+const flat = association({ total: 24, withEffect: 9 }, { total: 61, withEffect: 21 })
+const exclusive = association({ total: 12, withEffect: 5 }, { total: 55, withEffect: 0 })
+const thin = association({ total: 3, withEffect: 2 }, { total: 40, withEffect: 4 })
+const none = association({ total: 0, withEffect: 0 }, { total: 44, withEffect: 9 })
+---
+
+<PreviewPage title="Comparison">
+  <PreviewVariant description="More likely after the cause">
+    <Comparison
+      association={stronger}
+      causeName="Alcohol"
+      effectName="Bad stomach"
+      effectHue={20}
+    />
+  </PreviewVariant>
+
+  <PreviewVariant description="Less likely after the cause">
+    <Comparison association={weaker} causeName="Walked" effectName="Bad mood" effectHue={280} />
+  </PreviewVariant>
+
+  <PreviewVariant description="No real difference either way">
+    <Comparison association={flat} causeName="Read" effectName="Slept well" effectHue={200} />
+  </PreviewVariant>
+
+  <PreviewVariant description="The effect only ever follows the cause">
+    <Comparison
+      association={exclusive}
+      causeName="Alcohol: Wine"
+      effectName="Headache"
+      effectHue={340}
+    />
+  </PreviewVariant>
+
+  <PreviewVariant description="A claim drawn from few days">
+    <Comparison association={thin} causeName="Ran" effectName="Sore legs" effectHue={130} />
+  </PreviewVariant>
+
+  <PreviewVariant description="The cause has never happened">
+    <Comparison association={none} causeName="Travel" effectName="Bad sleep" effectHue={60} />
+  </PreviewVariant>
+</PreviewPage>
